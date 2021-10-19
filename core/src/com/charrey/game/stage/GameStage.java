@@ -2,11 +2,10 @@ package com.charrey.game.stage;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -19,7 +18,7 @@ import java.util.Iterator;
 public class GameStage extends HideableStage {
 
 
-    private static final Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+    private final Music rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
     Bucket bucket;
     Array<RainDrop> raindrops;
     long lastDropTime;
@@ -27,15 +26,11 @@ public class GameStage extends HideableStage {
     int dropsGathered;
     private Label score;
 
-    static {
+
+    public GameStage(Skin skin) {
         rainMusic.setLooping(true);
-    }
-
-
-    public GameStage(BitmapFont font) {
         bucket = new Bucket();
-        Label.LabelStyle style = new Label.LabelStyle(font, Color.WHITE);
-        score = new Label("", style);
+        score = new Label("", skin);
         addActor(bucket);
         addActor(score);
         raindrops = new Array<>();
@@ -44,8 +39,8 @@ public class GameStage extends HideableStage {
 
     private void spawnRainDrop() {
         RainDrop rainDrop = Pools.get(RainDrop.class).obtain();
-        rainDrop.setX(MathUtils.random(0, 800-64));
-        rainDrop.setY(480);
+        rainDrop.setX(MathUtils.random(0, getWidth()-rainDrop.getWidth()));
+        rainDrop.setY(getHeight());
         rainDrop.setWidth(64);
         rainDrop.setHeight(64);
         raindrops.add(rainDrop);
@@ -57,12 +52,11 @@ public class GameStage extends HideableStage {
 
     @Override
     public void act() {
-
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         if (TimeUtils.millis() - lastDropTime > 1000) {
             spawnRainDrop();
         }
-        Iterator<RainDrop> raindropIterator = raindrops.iterator();
+        Iterator<RainDrop> raindropIterator = new Array.ArrayIterator<>(raindrops);
         RainDrop currentRaindrop;
         Rectangle bucketRectangle = bucket.getRectangle();
         while (raindropIterator.hasNext()) {

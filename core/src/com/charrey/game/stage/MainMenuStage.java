@@ -1,43 +1,40 @@
 package com.charrey.game.stage;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.charrey.game.StageSwitcher;
-import com.charrey.game.stage.actor.MainMenuButton;
 
 public class MainMenuStage extends HideableStage {
 
-    private final StageSwitcher stageSwitcher;
-    private MainMenuButton playButton;
+    public MainMenuStage(StageSwitcher stageSwitcher, Skin skin) {
+        Table table = new Table();
+        TextButton playButton = new TextButton("Play", skin);
+        playButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                stageSwitcher.changeToGame();
+                return true;
+            }
+        });
+        table.add(playButton).width(100).pad(10);
+        table.row();
 
-    public MainMenuStage(StageSwitcher stageSwitcher, BitmapFont font) {
-        this.stageSwitcher = stageSwitcher;
-        playButton = new MainMenuButton("Play!", font);
-        playButton.setX(100);
-        playButton.setY(200);
-        addActor(playButton);
-    }
-
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector2 stageCoordinates = screenToStageCoordinates(new Vector2(screenX, screenY));
-        Actor hitted = hit(stageCoordinates.x, stageCoordinates.y, false);
-        if (hitted == playButton) {
-            stageSwitcher.changeToGame();
-        }
-        return true;
-    }
-
-    @Override
-    public float getHeight() {
-        return playButton.getHeight();
-    }
-
-    @Override
-    public float getWidth() {
-        return playButton.getWidth();
+        TextButton quitButton = new TextButton("Quit", skin);
+        quitButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.exit();
+                return true;
+            }
+        });
+        table.add(quitButton).width(100).pad(10);
+        addActor(table);
+        table.setX((getWidth() / 2f) - (table.getWidth() / 2f));
+        table.setY((getHeight() / 2f) - (table.getHeight() / 2f));
     }
 
     @Override

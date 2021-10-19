@@ -3,7 +3,7 @@ package com.charrey.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.charrey.game.stage.GameStage;
 import com.charrey.game.stage.HideableStage;
 import com.charrey.game.stage.MainMenuStage;
@@ -11,8 +11,8 @@ import com.charrey.game.stage.MainMenuStage;
 public class Drop extends Game implements StageSwitcher {
 
 
-    private HideableStage mainMenuStage;
-    private HideableStage gameStage;
+    private MainMenuStage mainMenuStage;
+    private GameStage gameStage;
     private HideableStage currentStage;
 
 
@@ -26,9 +26,9 @@ public class Drop extends Game implements StageSwitcher {
 
     @Override
     public void create() {
-        BitmapFont font = new BitmapFont();
-        mainMenuStage = new MainMenuStage(this, font);
-        gameStage = new GameStage(font);
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        mainMenuStage = new MainMenuStage(this, skin);
+        gameStage = new GameStage(skin);
         currentStage = mainMenuStage;
         Gdx.input.setInputProcessor(currentStage);
     }
