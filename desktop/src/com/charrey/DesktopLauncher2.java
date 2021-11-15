@@ -1,15 +1,15 @@
-package com.charrey.game.desktop;
+package com.charrey;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.charrey.game.Drop;
+import com.charrey.game.Explore;
 
-public class DesktopLauncher {
+public class DesktopLauncher2 {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.title = "Drop";
-		config.width = 800;
-		config.height = 480;
-		new LwjglApplication(new Drop(), config);
+		config.title = "Explore";
+		config.width = 1920;
+		config.height = 1080;
+		new LwjglApplication(new Explore(), config);
 	}
 }

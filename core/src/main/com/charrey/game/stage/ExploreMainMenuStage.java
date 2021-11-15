@@ -8,21 +8,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.charrey.game.StageSwitcher;
 
-public class MainMenuStage extends HideableStage {
+public class ExploreMainMenuStage extends HideableStage {
 
-    public MainMenuStage(StageSwitcher stageSwitcher, Skin skin) {
+    TextButton playButton;
+
+    public ExploreMainMenuStage(StageSwitcher stageSwitcher, Skin skin) {
         Table table = new Table();
-        TextButton playButton = new TextButton("Play", skin);
+        playButton = new TextButton("Play", skin);
         playButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                stageSwitcher.changeToGame();
+                playButton.getClickListener().cancel();
+                stageSwitcher.changeToStage(ExploreStage.GAME);
                 return true;
             }
         });
         table.add(playButton).width(100).pad(10);
         table.row();
-
         TextButton quitButton = new TextButton("Quit", skin);
         quitButton.addListener(new InputListener() {
             @Override
@@ -35,15 +37,5 @@ public class MainMenuStage extends HideableStage {
         addActor(table);
         table.setX((getWidth() / 2f) - (table.getWidth() / 2f));
         table.setY((getHeight() / 2f) - (table.getHeight() / 2f));
-    }
-
-    @Override
-    public void show() {
-        //The Main Menu has no state, so nothing needs to be reset when hidden or shown.
-    }
-
-    @Override
-    public void hide() {
-        //The Main Menu has no state, so nothing needs to be reset when hidden or shown.
     }
 }
