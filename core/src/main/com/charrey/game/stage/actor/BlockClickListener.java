@@ -48,8 +48,9 @@ public class BlockClickListener extends ClickListener {
             menu.setHeight(100);
             Arrays.stream(block.getStage().getActors().toArray()).filter(ContextMenu.class::isInstance).forEachOrdered(actor -> block.getStage().getRoot().removeActor(actor));
             block.getStage().addActor(menu);
+        } else if (button == 0) {
+            replaceBlock();
         }
-        replaceBlock();
         return true;
     }
 
