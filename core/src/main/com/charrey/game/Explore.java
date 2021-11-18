@@ -3,7 +3,6 @@ package com.charrey.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.charrey.game.stage.ExploreMainMenuStage;
 import com.charrey.game.stage.ExploreStage;
 import com.charrey.game.stage.HideableStage;
@@ -22,9 +21,8 @@ public class Explore extends Game implements StageSwitcher {
 
     @Override
     public void create() {
-        Skin skin = new Skin(Gdx.files.internal("skin2/uiskin.json"));
-        mainMenuStage = new ExploreMainMenuStage(this, skin);
-        gameStage = new ExploreGameStage(this, skin);
+        mainMenuStage = new ExploreMainMenuStage(this);
+        gameStage = new ExploreGameStage(this);
         currentStage = mainMenuStage;
         Gdx.input.setInputProcessor(currentStage);
     }

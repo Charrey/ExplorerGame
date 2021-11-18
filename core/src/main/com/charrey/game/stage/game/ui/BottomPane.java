@@ -1,6 +1,5 @@
 package com.charrey.game.stage.game.ui;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.charrey.game.StageSwitcher;
 import com.charrey.game.stage.ExploreStage;
@@ -21,17 +20,17 @@ public class BottomPane extends Table {
     private Runnable stopSimulation;
     private Consumer<String> saveLoader;
 
-    public BottomPane(Skin skin, float width, StageSwitcher stageSwitcher) {
+    public BottomPane(float width, StageSwitcher stageSwitcher) {
         float buttonWidth = width / 6f;
-        add(new MainMenuButton(skin, () -> {
+        add(new MainMenuButton(() -> {
             stopSimulation.run();
             stageSwitcher.changeToStage(ExploreStage.MENU);
         })).width(buttonWidth);
-        this.clearButton = new ClearButton(skin, () -> reset.run());
-        this.saveButton = new SaveButton(skin, () -> saveState.get());
-        this.saveAsButton = new SaveAsButton(skin, () -> saveState.get());
-        this.loadButton = new LoadButton(skin, s -> saveLoader.accept(s));
-        this.simulateButton = new SimulateButton(skin, () -> startSimulation.run(), () -> stopSimulation.run());
+        this.clearButton = new ClearButton(() -> reset.run());
+        this.saveButton = new SaveButton(() -> saveState.get());
+        this.saveAsButton = new SaveAsButton(() -> saveState.get());
+        this.loadButton = new LoadButton(s -> saveLoader.accept(s));
+        this.simulateButton = new SimulateButton(() -> startSimulation.run(), () -> stopSimulation.run());
         add(clearButton).width(buttonWidth);
         add(saveButton).width(buttonWidth);
         add(saveAsButton).width(buttonWidth);

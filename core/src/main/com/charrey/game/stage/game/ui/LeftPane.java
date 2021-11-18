@@ -1,12 +1,12 @@
 package com.charrey.game.stage.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.charrey.game.BlockType;
 import com.charrey.game.Direction;
+import com.charrey.game.util.SkinUtils;
 
 
 import java.util.Arrays;
@@ -20,15 +20,12 @@ import static com.charrey.game.Direction.*;
 
 public final class LeftPane extends Table {
 
-    private final Skin skin;
     private TextButton selected;
-
     private BlockType blockSelected = null;
     private Direction blockDirection = NOT_APPLICCABLE;
 
 
-    public LeftPane(Skin skin, float height) {
-        this.skin = skin;
+    public LeftPane(float height) {
         addLeftButton("empty", null, NOT_APPLICCABLE);
         addLeftButton("barrier", BARRIER, NOT_APPLICCABLE);
         addLeftButton("up", SPLIT_EXPLORER, UP);
@@ -47,7 +44,7 @@ public final class LeftPane extends Table {
     }
 
     private void addLeftButton(String value, BlockType type, Direction direction) {
-        TextButton button = new TextButton(value, skin);
+        TextButton button = new TextButton(value, SkinUtils.getSkin());
         if (selected == null) {
             selected = button;
         }

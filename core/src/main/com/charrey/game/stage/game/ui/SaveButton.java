@@ -3,8 +3,8 @@ package com.charrey.game.stage.game.ui;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.charrey.game.util.SkinUtils;
 import com.charrey.game.util.file.ExploreSaveFileFilter;
 import com.charrey.game.util.file.FileUtils;
 import com.charrey.game.util.file.filechooser.FileChooser;
@@ -16,8 +16,8 @@ import java.io.File;
 import java.util.function.Supplier;
 
 public class SaveButton extends TextButton {
-    public SaveButton(Skin skin, Supplier<String> saveState) {
-        super("Save", skin);
+    public SaveButton(Supplier<String> saveState) {
+        super("Save", SkinUtils.getSkin());
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {

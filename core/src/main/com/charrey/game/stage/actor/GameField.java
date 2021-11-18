@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -27,6 +29,9 @@ public class GameField extends Group {
     private int pixelWidth;
     
     GameFieldBlock[][] columns;
+    Lock readLock = new ReentrantLock();
+
+    private Simulator simulator;
 
     private boolean simulating = false;
 
@@ -38,6 +43,8 @@ public class GameField extends Group {
         this.newBlockType = newBlockType;
         this.newBlockDirection = newBlockDirection;
         columns = new GameFieldBlock[cellsInRow][cellsInColumn];
+        simulator = new Simulator(columns, canAct, readLock);
+
         addBlocks((columnIndex, rowIndex) -> Collections.emptySortedSet());
         Pixmap pixels = new Pixmap(Math.round(getWidth()), Math.round(getHeight()), RGB888);
         pixels.setColor(0.5f, 0.5f, 0.5f, 1);
@@ -78,12 +85,8 @@ public class GameField extends Group {
         addActor(block);
     }
 
-    private void forEachBlock(Consumer<GameFieldBlock> consumer) {
-        for (int columnIndex = 0; columnIndex < cellsInRow; columnIndex++) {
-            for (int rowIndex = 0; rowIndex < cellsInColumn; rowIndex++) {
-                consumer.accept(columns[columnIndex][rowIndex]);
-            }
-        }
+    public static void forEachBlock(GameFieldBlock[][] columns, Consumer<GameFieldBlock> consumer) {
+        Arrays.stream(columns).flatMap(Arrays::stream).forEach(consumer);
     }
 
     void removeBlockAtPos(int column, int row) {
@@ -139,6 +142,7 @@ public class GameField extends Group {
                 }
             }
             columns = new GameFieldBlock[cellsInRow][cellsInColumn];
+            simulator = new Simulator(columns, canAct, readLock);
             addBlocks((columnIndex, rowIndex) -> {
                 SortedSet<ModelEntity> res = new TreeSet<>();
                 JSONArray column = (JSONArray) columnsJSON.get(columnIndex);
@@ -159,30 +163,23 @@ public class GameField extends Group {
     private int cellsInRow = 50;
     private int cellsInColumn = 50;
 
-    @Override
-    public void act(float delta) {
-        if (simulating) {
-            Set<GameFieldBlock> actingWaitList = new HashSet<>(canAct);
-            Logger.getLogger(getClass().getName()).fine(() -> "Processing wait list " + actingWaitList.stream().map(GameFieldBlock::getName).reduce("", (s, s2) -> s + " " + s2, (s, s2) -> s + " " + s2));
-            canAct.clear();
-            for (GameFieldBlock block : actingWaitList) {
-                block.getSimulation().simulateStep();
-            }
-            forEachBlock(block -> block.getSimulation().step());
-        }
-    }
-
-    private Texture texture;
+    private final Texture texture;
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         batch.draw(texture, getX(), getY());
-        super.draw(batch, parentAlpha);
+        if (simulating) {
+            readLock.lock();
+            super.draw(batch, parentAlpha);
+            readLock.unlock();
+        } else {
+            super.draw(batch, parentAlpha);
+        }
     }
 
     public void reset() {
         canAct.clear();
-        forEachBlock(block -> {
+        forEachBlock(columns, block -> {
             block.getSpecification().removeAllModelEntities();
             block.getSimulation().clear(Collections.emptySet());
         });
@@ -191,17 +188,22 @@ public class GameField extends Group {
 
     public void startSimulation() {
         simulating = true;
-        forEachBlock(gameFieldBlock -> {
+        forEachBlock(columns, gameFieldBlock -> {
             if (gameFieldBlock.getSpecification().getVisibleBlockType() != null) {
                 canAct.add(gameFieldBlock);
             }
         });
-        forEachBlock(GameFieldBlock::switchToSimulation);
+        forEachBlock(columns, GameFieldBlock::switchToSimulation);
+        simulator.start();
     }
 
-    public void stopSimulation() {
-        simulating = false;
-        forEachBlock(GameFieldBlock::stopSimulation);
+    public void stopSimulation() throws InterruptedException {
+        try {
+            simulator.stop();
+        } finally {
+            simulating = false;
+            forEachBlock(columns, GameFieldBlock::stopSimulation);
+        }
     }
 
     private interface NewBlockSpecifier {
