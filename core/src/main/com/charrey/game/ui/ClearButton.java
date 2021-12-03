@@ -1,12 +1,13 @@
-package com.charrey.game.stage.game.ui;
+package com.charrey.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.charrey.game.util.SkinUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class ClearButton extends TextButton {
-    public ClearButton(Runnable behaviour) {
+    public ClearButton(@NotNull Runnable behaviour) {
         super("Clear", SkinUtils.getSkin());
         addListener(new InputListener() {
             @Override

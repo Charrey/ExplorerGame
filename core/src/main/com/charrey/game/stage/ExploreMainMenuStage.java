@@ -7,12 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.charrey.game.StageSwitcher;
 import com.charrey.game.util.SkinUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class ExploreMainMenuStage extends HideableStage {
 
-    TextButton playButton;
+    final TextButton playButton;
 
-    public ExploreMainMenuStage(StageSwitcher stageSwitcher) {
+    public ExploreMainMenuStage(@NotNull StageSwitcher stageSwitcher) {
         Table table = new Table();
         playButton = new TextButton("Play", SkinUtils.getSkin());
         playButton.addListener(new InputListener() {

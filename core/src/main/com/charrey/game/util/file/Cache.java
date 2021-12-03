@@ -1,5 +1,6 @@
 package com.charrey.game.util.file;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,7 +47,7 @@ public class Cache {
                     JSONObject obj = new JSONObject(settings);
                     obj.keys().forEachRemaining(s -> cachedProperties.put(s, obj.getString(s)));
                 }
-            } catch (IOException | JSONException e) {
+            } catch (@NotNull IOException | JSONException e) {
                 e.printStackTrace();
             }
         }

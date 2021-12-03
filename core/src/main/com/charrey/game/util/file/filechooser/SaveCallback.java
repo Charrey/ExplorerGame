@@ -6,13 +6,7 @@ import com.charrey.game.util.file.FileUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
-public class SaveCallback implements FileChooserCallback {
-
-    private final Supplier<String> saveState;
-
-    public SaveCallback(Supplier<String> saveState) {
-        this.saveState = saveState;
-    }
+public record SaveCallback(Supplier<String> saveState) implements FileChooserCallback {
 
     @Override
     public void onFileChosen(FileHandle file) {

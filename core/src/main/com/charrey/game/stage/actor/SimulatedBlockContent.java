@@ -5,6 +5,8 @@ import com.charrey.game.Direction;
 import com.charrey.game.model.ModelEntity;
 import com.charrey.game.util.Pair;
 import com.charrey.game.util.random.RandomUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -12,9 +14,12 @@ public class SimulatedBlockContent implements BlockContent {
 
     private final Runnable registerForSimulation;
 
-    private SortedSet<ModelEntity> invariant = new TreeSet<>();
-    private SortedSet<ModelEntity> currentState = new TreeSet<>();
-    private SortedSet<ModelEntity> nextState = new TreeSet<>();
+    @NotNull
+    private final SortedSet<ModelEntity> invariant = new TreeSet<>();
+    @NotNull
+    private final SortedSet<ModelEntity> currentState = new TreeSet<>();
+    @NotNull
+    private final SortedSet<ModelEntity> nextState = new TreeSet<>();
 
     SimulatedBlockContent left;
     SimulatedBlockContent right;
@@ -43,24 +48,24 @@ public class SimulatedBlockContent implements BlockContent {
         ModelEntity simulating;
         while (iterator.hasNext()) {
             simulating = iterator.next();
-            if (simulating.type == BlockType.BARRIER) {
+            if (simulating.type() == BlockType.BARRIER) {
                 nextState.add(simulating);
                 continue;
             }
-            SimulatedBlockContent lookingAt = getBlockAt(simulating.direction);
-            SimulatedBlockContent blockLeft = getBlockAt(Direction.rotateLeft(simulating.direction));
-            SimulatedBlockContent blockRight = getBlockAt(Direction.rotateRight(simulating.direction));
+            SimulatedBlockContent lookingAt = getBlockAt(simulating.direction());
+            SimulatedBlockContent blockLeft = getBlockAt(Direction.rotateLeft(simulating.direction()));
+            SimulatedBlockContent blockRight = getBlockAt(Direction.rotateRight(simulating.direction()));
             iterator.remove();
-            if (simulating.type == BlockType.SPLIT_EXPLORER) {
-                simulateSplitExplorer(simulating.direction, lookingAt, blockLeft, blockRight);
-            } else if (simulating.type == BlockType.RANDOM_EXPLORER) {
-                Direction directionBack = Direction.opposite(simulating.direction);
-                simulateRandomExplorer(simulating.direction, lookingAt, blockLeft, blockRight, getBlockAt(directionBack));
+            if (simulating.type() == BlockType.SPLIT_EXPLORER) {
+                simulateSplitExplorer(simulating.direction(), lookingAt, blockLeft, blockRight);
+            } else if (simulating.type() == BlockType.RANDOM_EXPLORER) {
+                Direction directionBack = Direction.opposite(simulating.direction());
+                simulateRandomExplorer(simulating.direction(), lookingAt, blockLeft, blockRight, getBlockAt(directionBack));
             }
         }
     }
 
-    private void simulateSplitExplorer(Direction direction, SimulatedBlockContent forward, SimulatedBlockContent left, SimulatedBlockContent right) {
+    private void simulateSplitExplorer(Direction direction, @NotNull SimulatedBlockContent forward, @NotNull SimulatedBlockContent left, @NotNull SimulatedBlockContent right) {
         if (forward.hasBarrier()) {
             if (!left.hasBarrier()) {
                 left.addToNextStep(new ModelEntity(BlockType.SPLIT_EXPLORER, Direction.rotateLeft(direction)));
@@ -75,7 +80,7 @@ public class SimulatedBlockContent implements BlockContent {
 
 
 
-    private void simulateRandomExplorer(Direction direction, SimulatedBlockContent forward, SimulatedBlockContent left, SimulatedBlockContent right, SimulatedBlockContent back) {
+    private void simulateRandomExplorer(Direction direction, @NotNull SimulatedBlockContent forward, @NotNull SimulatedBlockContent left, @NotNull SimulatedBlockContent right, @NotNull SimulatedBlockContent back) {
         if (forward.hasBarrier()) {
             Set<Pair<SimulatedBlockContent, Direction>> candidates = new HashSet<>();
             if (!left.hasBarrier()) {
@@ -89,7 +94,7 @@ public class SimulatedBlockContent implements BlockContent {
             }
             if (!candidates.isEmpty()) {
                 Pair<SimulatedBlockContent, Direction> selected = RandomUtils.fromCollection(candidates);
-                selected.first.addToNextStep(new ModelEntity(BlockType.RANDOM_EXPLORER, selected.second));
+                selected.first().addToNextStep(new ModelEntity(BlockType.RANDOM_EXPLORER, selected.second()));
             }
         } else {
             forward.addToNextStep(new ModelEntity(BlockType.RANDOM_EXPLORER, direction));
@@ -97,10 +102,10 @@ public class SimulatedBlockContent implements BlockContent {
     }
 
     private boolean hasBarrier() {
-        return currentState.stream().anyMatch(modelEntity -> modelEntity.type == BlockType.BARRIER);
+        return currentState.stream().anyMatch(modelEntity -> modelEntity.type() == BlockType.BARRIER);
     }
 
-    private SimulatedBlockContent getBlockAt(Direction direction) {
+    private @NotNull SimulatedBlockContent getBlockAt(Direction direction) {
         return switch (direction) {
             case UP ->  up;
             case DOWN -> down;
@@ -126,17 +131,17 @@ public class SimulatedBlockContent implements BlockContent {
         this.down = down;
     }
 
-    public void clear(Collection<ModelEntity> specification) {
+    public void clear(@NotNull Collection<ModelEntity> specification) {
         currentState.clear();
         nextState.clear();
         invariant.clear();
         currentState.addAll(specification);
-        specification.stream().filter(modelEntity -> modelEntity.type == BlockType.BARRIER).forEach(modelEntity -> invariant.add(modelEntity));
+        specification.stream().filter(modelEntity -> modelEntity.type() == BlockType.BARRIER).forEach(invariant::add);
         nextState.addAll(invariant);
     }
 
     @Override
-    public BlockType getVisibleBlockType() {
-        return currentState.isEmpty() ? null : currentState.first().type;
+    public @Nullable BlockType getVisibleBlockType() {
+        return currentState.isEmpty() ? null : currentState.first().type();
     }
 }

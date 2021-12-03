@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.charrey.game.BlockType;
 import com.charrey.game.Direction;
 import com.charrey.game.model.ModelEntity;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,13 +30,13 @@ public class GameField extends Group {
     private int pixelWidth;
     
     GameFieldBlock[][] columns;
-    Lock readLock = new ReentrantLock();
+    @NotNull final Lock readLock = new ReentrantLock();
 
     private Simulator simulator;
 
     private boolean simulating = false;
 
-    Set<GameFieldBlock> canAct = new HashSet<>();
+    @NotNull final Set<GameFieldBlock> canAct = new HashSet<>();
 
     public GameField(int pixelWidth, int pixelHeight, Supplier<BlockType> newBlockType, Supplier<Direction> newBlockDirection) {
         this.pixelWidth = cellsInRow * (pixelWidth / cellsInRow);
@@ -52,12 +53,12 @@ public class GameField extends Group {
         texture = new Texture(pixels);
     }
 
-    private void addBlocks(NewBlockSpecifier specifier) {
+    private void addBlocks(@NotNull NewBlockSpecifier specifier) {
         int blockWidth = pixelWidth / cellsInRow;
         int blockHeight = pixelHeight / cellsInColumn;
         for (int columnIndex = 0; columnIndex < cellsInRow; columnIndex++) {
             for (int rowIndex = 0; rowIndex < cellsInColumn; rowIndex++) {
-                GameFieldBlock block = new GameFieldBlock(mayAct -> canAct.add(mayAct), "("+columnIndex+", "+rowIndex+")");
+                GameFieldBlock block = new GameFieldBlock(canAct::add, "("+columnIndex+", "+rowIndex+")");
                 block.setX(blockWidth * (float) columnIndex);
                 block.setY(blockHeight * (float) rowIndex);
                 block.setWidth(blockWidth);
@@ -85,7 +86,7 @@ public class GameField extends Group {
         addActor(block);
     }
 
-    public static void forEachBlock(GameFieldBlock[][] columns, Consumer<GameFieldBlock> consumer) {
+    public static void forEachBlock(GameFieldBlock[] @NotNull [] columns, Consumer<GameFieldBlock> consumer) {
         Arrays.stream(columns).flatMap(Arrays::stream).forEach(consumer);
     }
 
@@ -104,9 +105,9 @@ public class GameField extends Group {
                 SortedSet<ModelEntity> modelEntities = block.getSpecification().getEntities();
                 modelEntities.forEach(modelEntity -> {
                     JSONArray entityData = new JSONArray();
-                    entityData.put(modelEntity.type.toString());
-                    if (modelEntity.direction != null) {
-                        entityData.put(modelEntity.direction.toString());
+                    entityData.put(modelEntity.type().toString());
+                    if (modelEntity.direction() != null) {
+                        entityData.put(modelEntity.direction().toString());
                     }
                     modelEntitiesJSON.put(entityData);
                 });
@@ -118,7 +119,7 @@ public class GameField extends Group {
         return data.toString();
     }
 
-    public void load(String serialized) {
+    public void load(@NotNull String serialized) {
         try {
 
             JSONObject data = new JSONObject(serialized);
@@ -126,16 +127,18 @@ public class GameField extends Group {
             this.pixelWidth = (Integer) data.get("pixelWidth");
             JSONArray columnsJSON = ((JSONArray) data.get("cells"));
             cellsInRow = columnsJSON.length();
-            Integer cellsInColumnHypothesis = null;
+            cellsInColumn = -1;
+            if (columnsJSON.isEmpty()) {
+                throw new JSONException("There are no cells in this save file.");
+            }
             for (int columnIndex = 0; columnIndex < columnsJSON.length(); columnIndex++) {
                 JSONArray columnJSON = ((JSONArray)columnsJSON.get(columnIndex));
-                if (cellsInColumnHypothesis == null) {
-                    cellsInColumnHypothesis = columnJSON.length();
-                } else if (cellsInColumnHypothesis != columnJSON.length()) {
+                if (cellsInColumn == -1) {
+                    cellsInColumn = columnJSON.length();
+                } else if (cellsInColumn != columnJSON.length()) {
                     throw new JSONException("Cells in save file do not correspond to a rectangle.");
                 }
             }
-            cellsInColumn = cellsInColumnHypothesis;
             for (int columnIndex = 0; columnIndex < columns.length; columnIndex++) {
                 for (int rowIndex = 0; rowIndex < columns[columnIndex].length; rowIndex++) {
                     removeBlockAtPos(columnIndex, rowIndex);
@@ -160,13 +163,13 @@ public class GameField extends Group {
         }
     }
 
-    private int cellsInRow = 50;
-    private int cellsInColumn = 50;
+    private int cellsInRow = 10;
+    private int cellsInColumn = 10;
 
-    private final Texture texture;
+    private final @NotNull Texture texture;
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(@NotNull Batch batch, float parentAlpha) {
         batch.draw(texture, getX(), getY());
         if (simulating) {
             readLock.lock();
@@ -208,6 +211,6 @@ public class GameField extends Group {
 
     private interface NewBlockSpecifier {
 
-        SortedSet<ModelEntity> getEntities(int columnIndex, int rowIndex);
+        @NotNull SortedSet<ModelEntity> getEntities(int columnIndex, int rowIndex);
     }
 }

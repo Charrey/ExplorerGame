@@ -9,10 +9,13 @@ import com.badlogic.gdx.utils.Null;
 import com.charrey.game.BlockType;
 import com.charrey.game.Direction;
 import com.charrey.game.model.ModelEntity;
-import com.charrey.game.stage.actor.context.ContextMenu;
-import com.charrey.game.stage.actor.context.ContextMenuItem;
+import com.charrey.game.ui.context.ContextMenu;
+import com.charrey.game.ui.context.ContextMenuItem;
+import com.charrey.game.ui.context.GroupContextMenuItem;
+import com.charrey.game.ui.context.LeafContextMenuItem;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class BlockClickListener extends ClickListener {
@@ -31,7 +34,7 @@ public class BlockClickListener extends ClickListener {
 
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, @Null Actor fromActor) {
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() && !Gdx.input.justTouched()) {
             replaceBlock();
         }
     }
@@ -40,14 +43,16 @@ public class BlockClickListener extends ClickListener {
     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
         super.touchDown(event, x, y, pointer, button);
         if (button == 1) {
-            ContextMenu menu = new ContextMenu();
-            menu.add(new ContextMenuItem("Test", () -> {}));
-            menu.setX(block.localToStageCoordinates(new Vector2(x, y)).x);
-            menu.setY(block.localToStageCoordinates(new Vector2(x, y)).y);
-            menu.setWidth(100);
-            menu.setHeight(100);
-            Arrays.stream(block.getStage().getActors().toArray()).filter(ContextMenu.class::isInstance).forEachOrdered(actor -> block.getStage().getRoot().removeActor(actor));
+            Arrays.stream(block.getStage().getRoot().getChildren().toArray()).filter(ContextMenu.class::isInstance).forEachOrdered(Actor::remove);
+            ContextMenu menu = new ContextMenu("root", 0);
             block.getStage().addActor(menu);
+            Supplier<ContextMenuItem> leafItem = () -> new LeafContextMenuItem("D", () -> {});
+            Supplier<ContextMenuItem> lastGroupItem = () -> new GroupContextMenuItem("C", List.of(leafItem));
+            Supplier<ContextMenuItem> firstToLastGroupItem = () -> new GroupContextMenuItem("B", List.of(lastGroupItem));
+            menu.add(new GroupContextMenuItem("A", List.of(firstToLastGroupItem)));
+            menu.add(new LeafContextMenuItem("Clear", () -> block.getSpecification().removeAllModelEntities()));
+            menu.setX(block.localToStageCoordinates(new Vector2(x, y)).x + 1);
+            menu.setY(block.localToStageCoordinates(new Vector2(x, y)).y + 1);
         } else if (button == 0) {
             replaceBlock();
         }

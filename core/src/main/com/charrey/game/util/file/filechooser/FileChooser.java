@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.files.FileHandle;
+import org.jetbrains.annotations.NotNull;
 
 
 public class FileChooser {
@@ -15,7 +16,7 @@ public class FileChooser {
 	private FileChooser() {}
 
 
-	public static void chooseAnyFile(final FileChooserConfiguration configuration, FileChooserCallback callback) {
+	public static void chooseAnyFile(final @NotNull FileChooserConfiguration configuration, @NotNull FileChooserCallback callback) {
 		Objects.requireNonNull(configuration, "Given argument \"configuration\" must not be null");
 		Objects.requireNonNull(callback, "Given argument \"callback\" must not be null");
 
@@ -39,7 +40,7 @@ public class FileChooser {
 	}
 
 
-	public static void chooseExistingFile(final FileChooserConfiguration configuration, FileChooserCallback callback) {
+	public static void chooseExistingFile(final @NotNull FileChooserConfiguration configuration, @NotNull FileChooserCallback callback) {
 		Objects.requireNonNull(configuration, "Given argument \"configuration\" must not be null");
 		Objects.requireNonNull(callback, "Given argument \"callback\" must not be null");
 

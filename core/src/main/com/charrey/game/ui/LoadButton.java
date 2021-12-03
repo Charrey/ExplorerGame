@@ -1,4 +1,4 @@
-package com.charrey.game.stage.game.ui;
+package com.charrey.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;

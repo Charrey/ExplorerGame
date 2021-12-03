@@ -5,13 +5,7 @@ import com.charrey.game.util.file.FileUtils;
 
 import java.util.function.Consumer;
 
-public class LoadCallback implements FileChooserCallback {
-
-    private final Consumer<String> stringConsumer;
-
-    public LoadCallback(Consumer<String> stringConsumer) {
-        this.stringConsumer = stringConsumer;
-    }
+public record LoadCallback(Consumer<String> stringConsumer) implements FileChooserCallback {
 
     @Override
     public void onFileChosen(FileHandle file) {

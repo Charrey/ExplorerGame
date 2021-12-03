@@ -2,7 +2,9 @@ package com.charrey.game.stage.actor;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.charrey.game.texture.GameFieldBlockTextureCache;
 import com.charrey.game.util.testwrap.TestGenie;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -10,14 +12,14 @@ import static com.badlogic.gdx.scenes.scene2d.Touchable.enabled;
 
 public class GameFieldBlock extends Actor {
 
-    private final SimulatedBlockContent simulation;
-    private final SpecifiedBlockContent specification;
+    private final @NotNull SimulatedBlockContent simulation;
+    private final @NotNull SpecifiedBlockContent specification;
     private final String name;
 
     private BlockContent currentContent;
 
 
-    public GameFieldBlock(Consumer<GameFieldBlock> registerForSimulation, String name) {
+    public GameFieldBlock(@NotNull Consumer<GameFieldBlock> registerForSimulation, String name) {
         setTouchable(enabled);
         specification =  new SpecifiedBlockContent();
         simulation = new SimulatedBlockContent(() -> registerForSimulation.accept(this));
@@ -31,20 +33,20 @@ public class GameFieldBlock extends Actor {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(@NotNull Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         if (!TestGenie.isAmIUnderTest()) {
-            batch.draw(GameFieldBlockTexture.get(currentContent.getVisibleBlockType(), (int) getWidth(), (int) getHeight()), getX(), getY());
+            batch.draw(GameFieldBlockTextureCache.get(currentContent.getVisibleBlockType(), (int) getWidth(), (int) getHeight()), getX(), getY());
         }
     }
 
 
 
-    public SpecifiedBlockContent getSpecification() {
+    public @NotNull SpecifiedBlockContent getSpecification() {
         return specification;
     }
 
-    public SimulatedBlockContent getSimulation() {
+    public @NotNull SimulatedBlockContent getSimulation() {
         return simulation;
     }
 

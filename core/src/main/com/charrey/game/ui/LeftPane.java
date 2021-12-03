@@ -1,4 +1,4 @@
-package com.charrey.game.stage.game.ui;
+package com.charrey.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.charrey.game.BlockType;
 import com.charrey.game.Direction;
 import com.charrey.game.util.SkinUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 import java.util.Arrays;
@@ -21,7 +23,7 @@ import static com.charrey.game.Direction.*;
 public final class LeftPane extends Table {
 
     private TextButton selected;
-    private BlockType blockSelected = null;
+    private @Nullable BlockType blockSelected = null;
     private Direction blockDirection = NOT_APPLICCABLE;
 
 
@@ -50,7 +52,7 @@ public final class LeftPane extends Table {
         }
         button.addCaptureListener(new ClickListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int ignore) {
+            public boolean touchDown(@NotNull InputEvent event, float x, float y, int pointer, int ignore) {
                 event.cancel();
                 selected.getClickListener().touchUp(event, 0f, 0f, 0, 0);
                 selected = button;
@@ -61,7 +63,7 @@ public final class LeftPane extends Table {
             }
 
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void touchUp(@NotNull InputEvent event, float x, float y, int pointer, int button) {
                 event.cancel();
             }
         });
@@ -75,7 +77,7 @@ public final class LeftPane extends Table {
         selected.getClickListener().touchUp(event, 0, 0, 0, 0);
     }
 
-    public BlockType getBlockSelected() {
+    public @Nullable BlockType getBlockSelected() {
         return blockSelected;
     }
 

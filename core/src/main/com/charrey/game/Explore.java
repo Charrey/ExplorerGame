@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.charrey.game.stage.ExploreMainMenuStage;
 import com.charrey.game.stage.ExploreStage;
 import com.charrey.game.stage.HideableStage;
-import com.charrey.game.stage.game.ExploreGameStage;
+import com.charrey.game.stage.ExploreGameStage;
 import com.charrey.game.util.file.Cache;
 
 import java.io.IOException;

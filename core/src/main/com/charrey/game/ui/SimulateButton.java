@@ -1,16 +1,17 @@
-package com.charrey.game.stage.game.ui;
+package com.charrey.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.charrey.game.util.SkinUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class SimulateButton extends TextButton {
 
 
     boolean simulationRunning = false;
 
-    public SimulateButton(Runnable startSimulation, Runnable stopSimulation) {
+    public SimulateButton(@NotNull Runnable startSimulation, @NotNull Runnable stopSimulation) {
         super("Simulate", SkinUtils.getSkin());
         addListener(new InputListener() {
             @Override

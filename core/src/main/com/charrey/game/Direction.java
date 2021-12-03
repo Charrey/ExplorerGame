@@ -1,9 +1,11 @@
 package com.charrey.game;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum Direction {
     UP, DOWN, LEFT, RIGHT, NOT_APPLICCABLE;
 
-    public static Direction rotateLeft(Direction direction) {
+    public static @NotNull Direction rotateLeft(Direction direction) {
         return switch (direction) {
             case UP -> LEFT;
             case DOWN -> RIGHT;
@@ -13,7 +15,7 @@ public enum Direction {
         };
     }
 
-    public static Direction rotateRight(Direction direction) {
+    public static @NotNull Direction rotateRight(Direction direction) {
         return switch (direction) {
             case UP -> RIGHT;
             case DOWN -> LEFT;
@@ -23,7 +25,7 @@ public enum Direction {
         };
     }
 
-    public static Direction opposite(Direction direction) {
+    public static @NotNull Direction opposite(Direction direction) {
         return switch (direction) {
             case UP -> DOWN;
             case DOWN -> UP;

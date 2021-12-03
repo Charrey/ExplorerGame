@@ -2,6 +2,7 @@ package com.charrey.game.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import org.jetbrains.annotations.NotNull;
 
 public class SkinUtils {
 
@@ -9,7 +10,7 @@ public class SkinUtils {
 
     private static final Skin skin = new Skin(Gdx.files.internal("skin2/uiskin.json"));
 
-    public static Skin getSkin() {
+    public static @NotNull Skin getSkin() {
         return skin;
     }
 }

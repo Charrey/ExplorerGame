@@ -1,26 +1,27 @@
-package com.charrey.game.stage.game.ui;
+package com.charrey.game.ui;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.charrey.game.StageSwitcher;
 import com.charrey.game.stage.ExploreStage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BottomPane extends Table {
 
-    private final ClearButton clearButton;
-    private final SaveButton saveButton;
-    private final SaveAsButton saveAsButton;
-    private final LoadButton loadButton;
-    private final SimulateButton simulateButton;
+    private final @NotNull ClearButton clearButton;
+    private final @NotNull SaveButton saveButton;
+    private final @NotNull SaveAsButton saveAsButton;
+    private final @NotNull LoadButton loadButton;
+    private final @NotNull SimulateButton simulateButton;
     private Supplier<String> saveState;
     private Runnable reset;
     private Runnable startSimulation;
     private Runnable stopSimulation;
     private Consumer<String> saveLoader;
 
-    public BottomPane(float width, StageSwitcher stageSwitcher) {
+    public BottomPane(float width, @NotNull StageSwitcher stageSwitcher) {
         float buttonWidth = width / 6f;
         add(new MainMenuButton(() -> {
             stopSimulation.run();
@@ -50,7 +51,7 @@ public class BottomPane extends Table {
         this.saveLoader = saveLoader;
     }
 
-    public void setStartSimulation(Runnable startSimulation) {
+    public void setStartSimulation(@NotNull Runnable startSimulation) {
         this.startSimulation = () -> {
             clearButton.setDisabled(true);
             saveButton.setDisabled(true);
@@ -61,7 +62,7 @@ public class BottomPane extends Table {
         };
     }
 
-    public void setStopSimulation(Runnable stopSimulation) {
+    public void setStopSimulation(@NotNull Runnable stopSimulation) {
         this.stopSimulation = () -> {
             clearButton.setDisabled(false);
             saveButton.setDisabled(false);

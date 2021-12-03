@@ -1,4 +1,4 @@
-package com.charrey.game.stage.game;
+package com.charrey.game.stage;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,13 +7,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Collections;
 import com.charrey.game.StageSwitcher;
-import com.charrey.game.stage.HideableStage;
 import com.charrey.game.stage.actor.GameField;
-import com.charrey.game.stage.actor.context.ContextMenu;
-import com.charrey.game.stage.actor.context.ContextMenuItem;
-import com.charrey.game.stage.game.ui.BottomPane;
-import com.charrey.game.stage.game.ui.LeftPane;
+import com.charrey.game.stage.actor.MouseIndicator;
+import com.charrey.game.ui.context.ContextMenu;
+import com.charrey.game.ui.context.ContextMenuItem;
+import com.charrey.game.ui.BottomPane;
+import com.charrey.game.ui.LeftPane;
 import com.charrey.game.util.SkinUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -21,15 +22,15 @@ import java.util.stream.StreamSupport;
 
 public class ExploreGameStage extends HideableStage {
 
-    private final LeftPane leftPane;
+    private final @NotNull LeftPane leftPane;
 
-    private final GameField gameField;
+    private final @NotNull GameField gameField;
 
     static {
         Collections.allocateIterators = true;
     }
 
-    public ExploreGameStage(StageSwitcher stageSwitcher) {
+    public ExploreGameStage(@NotNull StageSwitcher stageSwitcher) {
         Table layout = new Table(SkinUtils.getSkin());
 
         BottomPane bottomPane = new BottomPane(getWidth(), stageSwitcher);
@@ -54,6 +55,7 @@ public class ExploreGameStage extends HideableStage {
         layout.setX(0 + layout.getPrefWidth() / 2);
         layout.setY(0 + layout.getPrefHeight() / 2);
         addActor(layout);
+        addActor(new MouseIndicator());
         show();
     }
 
@@ -65,7 +67,7 @@ public class ExploreGameStage extends HideableStage {
                 Vector2 stageCoordinates = screenToStageCoordinates(new Vector2(screenX, screenY));
                 Actor target = hit(stageCoordinates.x, stageCoordinates.y, true);
                 if (!(target instanceof ContextMenu || target instanceof ContextMenuItem)) {
-                    contextMenus.forEach(actor -> getRoot().removeActor(actor));
+                    contextMenus.forEach(Actor::remove);
                     return true;
                 }
             }
@@ -82,6 +84,7 @@ public class ExploreGameStage extends HideableStage {
     public void hide() {
         leftPane.hide();
     }
+
 
 
 }
