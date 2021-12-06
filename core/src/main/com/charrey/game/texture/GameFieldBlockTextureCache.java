@@ -8,6 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 
+/**
+ * Class that provides static methods to provide blocks with textures.
+ */
 public class GameFieldBlockTextureCache {
 
     private GameFieldBlockTextureCache() {}
@@ -23,6 +26,13 @@ public class GameFieldBlockTextureCache {
         cache.put(BlockType.RANDOM_EXPLORER, new CachedGameFieldBlockTexture(new Color(0.8f, 0.3f, 0.3f, 1)));
     }
 
+    /**
+     * Provides a texture for a specific block with specific dimensions
+     * @param type type of block to be rendered
+     * @param width width of the texture in pixels
+     * @param height height of the texture in pixels
+     * @return the texture
+     */
     public static Texture get(@Nullable BlockType type, int width, int height) {
         CachedGameFieldBlockTexture texture = type == null ? cacheEmptyBlock : cache.get(type);
         return texture.get(width, height);

@@ -1,21 +1,27 @@
 package com.charrey.game.util.file.filechooser;
 
+import com.badlogic.gdx.files.FileHandle;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import javax.swing.JFileChooser;
-
-import com.badlogic.gdx.files.FileHandle;
-import org.jetbrains.annotations.NotNull;
-
-
+/**
+ * Class providing utility methods to show file chooser prompts for the user.
+ */
 public class FileChooser {
 
 	private FileChooser() {}
 
 
+	/**
+	 * Presents a file chooser for the user to select a file that may exists or not.
+	 * @param configuration configuration for the file chooser
+	 * @param callback callback to be called with the results of the file choosing.
+	 */
 	public static void chooseAnyFile(final @NotNull FileChooserConfiguration configuration, @NotNull FileChooserCallback callback) {
 		Objects.requireNonNull(configuration, "Given argument \"configuration\" must not be null");
 		Objects.requireNonNull(callback, "Given argument \"callback\" must not be null");
@@ -39,7 +45,11 @@ public class FileChooser {
         }
 	}
 
-
+	/**
+	 * Presents a file chooser for the user to select a file that exists.
+	 * @param configuration configuration for the file chooser
+	 * @param callback callback to be called with the results of the file choosing.
+	 */
 	public static void chooseExistingFile(final @NotNull FileChooserConfiguration configuration, @NotNull FileChooserCallback callback) {
 		Objects.requireNonNull(configuration, "Given argument \"configuration\" must not be null");
 		Objects.requireNonNull(callback, "Given argument \"callback\" must not be null");

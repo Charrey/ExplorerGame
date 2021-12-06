@@ -5,6 +5,9 @@ import com.charrey.game.util.file.FileUtils;
 
 import java.util.function.Consumer;
 
+/**
+ * Class that is called to load a string from a file containing a savegame.
+ */
 public record LoadCallback(Consumer<String> stringConsumer) implements FileChooserCallback {
 
     @Override

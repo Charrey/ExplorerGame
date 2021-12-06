@@ -18,12 +18,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Handles clicks on a block. In simulation mode, this does not do anything. In specification mode, clicking a block removes all entities
+ * and replaces them with the currently selected entity in the selection bar.
+ */
 public class BlockClickListener extends ClickListener {
 
     private final Supplier<BlockType> newBlockType;
     private final Supplier<Direction> newBlockDirection;
     private final GameFieldBlock block;
 
+    /**
+     * Creates a listener for a specific block
+     * @param block block to listen to clicks for
+     * @param newBlockType indicates which block type is selected by the user to replace this with
+     * @param newBlockDirection indicates which block direction is selected by the user to replace this with
+     */
     public BlockClickListener(GameFieldBlock block,
                               Supplier<BlockType> newBlockType,
                               Supplier<Direction> newBlockDirection) {
@@ -44,12 +54,16 @@ public class BlockClickListener extends ClickListener {
         super.touchDown(event, x, y, pointer, button);
         if (button == 1) {
             Arrays.stream(block.getStage().getRoot().getChildren().toArray()).filter(ContextMenu.class::isInstance).forEachOrdered(Actor::remove);
-            ContextMenu menu = new ContextMenu("root", 0);
+            ContextMenu menu = new ContextMenu(0);
+            menu.setName("root");
             block.getStage().addActor(menu);
-            Supplier<ContextMenuItem> leafItem = () -> new LeafContextMenuItem("D", () -> {});
-            Supplier<ContextMenuItem> lastGroupItem = () -> new GroupContextMenuItem("C", List.of(leafItem));
-            Supplier<ContextMenuItem> firstToLastGroupItem = () -> new GroupContextMenuItem("B", List.of(lastGroupItem));
-            menu.add(new GroupContextMenuItem("A", List.of(firstToLastGroupItem)));
+
+            Supplier<ContextMenuItem> leftItem = () -> new LeafContextMenuItem("Left", () -> {});
+            Supplier<ContextMenuItem> rightItem = () -> new LeafContextMenuItem("Right", () -> {});
+            Supplier<ContextMenuItem> upItem = () -> new LeafContextMenuItem("Up", () -> {});
+            Supplier<ContextMenuItem> downItem = () -> new LeafContextMenuItem("Down", () -> {});
+
+            menu.add(new GroupContextMenuItem("Set direction to", List.of(leftItem, rightItem, upItem, downItem)));
             menu.add(new LeafContextMenuItem("Clear", () -> block.getSpecification().removeAllModelEntities()));
             menu.setX(block.localToStageCoordinates(new Vector2(x, y)).x + 1);
             menu.setY(block.localToStageCoordinates(new Vector2(x, y)).y + 1);

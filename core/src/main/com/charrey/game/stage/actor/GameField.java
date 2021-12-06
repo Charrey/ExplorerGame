@@ -21,6 +21,9 @@ import java.util.logging.Logger;
 
 import static com.badlogic.gdx.graphics.Pixmap.Format.RGB888;
 
+/**
+ * Grid of blocks that can each be specified. The blocks also show the simulation.
+ */
 public class GameField extends Group {
 
 
@@ -38,13 +41,21 @@ public class GameField extends Group {
 
     @NotNull final Set<GameFieldBlock> canAct = new HashSet<>();
 
+    /**
+     * Creates a new GameField. The actual size in pixels might be slightly different from the requested width and height,
+     * since this constructor forces each game block to be squares of the same size.
+     * @param pixelWidth requested width in pixels.
+     * @param pixelHeight requested height in pixels.
+     * @param newBlockType method that returns which block type the user has currently selected
+     * @param newBlockDirection method that returns which block direction the user has currently selected
+     */
     public GameField(int pixelWidth, int pixelHeight, Supplier<BlockType> newBlockType, Supplier<Direction> newBlockDirection) {
         this.pixelWidth = cellsInRow * (pixelWidth / cellsInRow);
         this.pixelHeight = cellsInColumn * (pixelHeight / cellsInColumn);
         this.newBlockType = newBlockType;
         this.newBlockDirection = newBlockDirection;
         columns = new GameFieldBlock[cellsInRow][cellsInColumn];
-        simulator = new Simulator(columns, canAct, readLock);
+        simulator = new Simulator(this, canAct, readLock);
 
         addBlocks((columnIndex, rowIndex) -> Collections.emptySortedSet());
         Pixmap pixels = new Pixmap(Math.round(getWidth()), Math.round(getHeight()), RGB888);
@@ -58,7 +69,8 @@ public class GameField extends Group {
         int blockHeight = pixelHeight / cellsInColumn;
         for (int columnIndex = 0; columnIndex < cellsInRow; columnIndex++) {
             for (int rowIndex = 0; rowIndex < cellsInColumn; rowIndex++) {
-                GameFieldBlock block = new GameFieldBlock(canAct::add, "("+columnIndex+", "+rowIndex+")");
+                GameFieldBlock block = new GameFieldBlock(canAct::add);
+                block.setName("("+columnIndex+", "+rowIndex+")");
                 block.setX(blockWidth * (float) columnIndex);
                 block.setY(blockHeight * (float) rowIndex);
                 block.setWidth(blockWidth);
@@ -86,7 +98,11 @@ public class GameField extends Group {
         addActor(block);
     }
 
-    public static void forEachBlock(GameFieldBlock[] @NotNull [] columns, Consumer<GameFieldBlock> consumer) {
+    /**
+     * Performs an operation on each of the blocks in a game field.
+     * @param consumer operation to perform.
+     */
+    public void forEachBlock(Consumer<GameFieldBlock> consumer) {
         Arrays.stream(columns).flatMap(Arrays::stream).forEach(consumer);
     }
 
@@ -95,6 +111,10 @@ public class GameField extends Group {
         columns[column][row] = null;
     }
 
+    /**
+     * Provides a string representation of the current game field. This is a valid save file if written to a file with .explore extension.
+     * @return the string representation
+     */
     public String serialize() {
         JSONArray jsonColumns = new JSONArray();
         for (int columnIndex = 0; columnIndex < cellsInRow; columnIndex++) {
@@ -119,6 +139,10 @@ public class GameField extends Group {
         return data.toString();
     }
 
+    /**
+     * Loads a save game into this gamefield.
+     * @param serialized string representation of a save.
+     */
     public void load(@NotNull String serialized) {
         try {
 
@@ -145,7 +169,7 @@ public class GameField extends Group {
                 }
             }
             columns = new GameFieldBlock[cellsInRow][cellsInColumn];
-            simulator = new Simulator(columns, canAct, readLock);
+            simulator = new Simulator(this, canAct, readLock);
             addBlocks((columnIndex, rowIndex) -> {
                 SortedSet<ModelEntity> res = new TreeSet<>();
                 JSONArray column = (JSONArray) columnsJSON.get(columnIndex);
@@ -180,32 +204,42 @@ public class GameField extends Group {
         }
     }
 
+    /**
+     * Resets all blocks to contain no entities.
+     */
     public void reset() {
         canAct.clear();
-        forEachBlock(columns, block -> {
+        forEachBlock(block -> {
             block.getSpecification().removeAllModelEntities();
             block.getSimulation().clear(Collections.emptySet());
         });
 
     }
 
+    /**
+     * Starts the simulator in a separate Thread.
+     */
     public void startSimulation() {
         simulating = true;
-        forEachBlock(columns, gameFieldBlock -> {
+        forEachBlock(gameFieldBlock -> {
             if (gameFieldBlock.getSpecification().getVisibleBlockType() != null) {
                 canAct.add(gameFieldBlock);
             }
         });
-        forEachBlock(columns, GameFieldBlock::switchToSimulation);
+        forEachBlock(GameFieldBlock::switchToSimulation);
         simulator.start();
     }
 
+    /**
+     * Stops the simulation
+     * @throws InterruptedException Thrown when the thread is interrupted while waiting for the simulation thread to finish
+     */
     public void stopSimulation() throws InterruptedException {
         try {
             simulator.stop();
         } finally {
             simulating = false;
-            forEachBlock(columns, GameFieldBlock::stopSimulation);
+            forEachBlock(GameFieldBlock::stopSimulation);
         }
     }
 

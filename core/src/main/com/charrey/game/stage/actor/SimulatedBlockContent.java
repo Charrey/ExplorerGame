@@ -10,6 +10,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * Class that keeps track of the simulated content of a single gamefieldblock.
+ */
 public class SimulatedBlockContent implements BlockContent {
 
     private final Runnable registerForSimulation;
@@ -26,6 +29,10 @@ public class SimulatedBlockContent implements BlockContent {
     SimulatedBlockContent up;
     SimulatedBlockContent down;
 
+    /**
+     * Creates a new SimulatedBlockContent.
+     * @param registerForSimulation Called when this block should be simulated in the next step.
+     */
     public SimulatedBlockContent(Runnable registerForSimulation) {
         this.registerForSimulation = registerForSimulation;
     }
@@ -35,6 +42,9 @@ public class SimulatedBlockContent implements BlockContent {
         registerForSimulation.run();
     }
 
+    /**
+     * Processes any state changes initiated by other blocks.
+     */
     public void step() {
         currentState.clear();
         currentState.addAll(nextState);
@@ -42,7 +52,10 @@ public class SimulatedBlockContent implements BlockContent {
         nextState.addAll(invariant);
     }
 
-
+    /**
+     * Performs a single simulation step. This does not immediately affect other blocks: only after those blocks have
+     * called their step() method.
+     */
     public void simulateStep() {
         Iterator<ModelEntity> iterator = currentState.iterator();
         ModelEntity simulating;
@@ -115,22 +128,42 @@ public class SimulatedBlockContent implements BlockContent {
         };
     }
 
+    /**
+     * Sets which block is to the left of this one.
+     * @param left the block
+     */
     public void setLeft(SimulatedBlockContent left) {
         this.left = left;
     }
 
+    /**
+     * Sets which block is to the right of this one.
+     * @param right the block
+     */
     public void setRight(SimulatedBlockContent right) {
         this.right = right;
     }
 
+    /**
+     * Sets which block is directly above this one.
+     * @param up the block
+     */
     public void setUp(SimulatedBlockContent up) {
         this.up = up;
     }
 
+    /**
+     * Sets which block is directly below this one.
+     * @param down the block
+     */
     public void setDown(SimulatedBlockContent down) {
         this.down = down;
     }
 
+    /**
+     * Resets this block to the specification (when the simulation starts)
+     * @param specification the specification
+     */
     public void clear(@NotNull Collection<ModelEntity> specification) {
         currentState.clear();
         nextState.clear();

@@ -3,14 +3,18 @@ package com.charrey.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.charrey.game.stage.ExploreGameStage;
 import com.charrey.game.stage.ExploreMainMenuStage;
 import com.charrey.game.stage.ExploreStage;
 import com.charrey.game.stage.HideableStage;
-import com.charrey.game.stage.ExploreGameStage;
 import com.charrey.game.util.file.Cache;
 
 import java.io.IOException;
 
+/**
+ * Game that provides a way for the player to specify different types of blocks in a grid. Then, in a simulation these
+ * blocks interact in specific ways.
+ */
 public class Explore extends Game implements StageSwitcher {
 
     private ExploreMainMenuStage mainMenuStage;
@@ -53,6 +57,10 @@ public class Explore extends Game implements StageSwitcher {
         currentStage.draw();
     }
 
+    /**
+     * Sets which stage is shown in the window.
+     * @param newStage stage to be shown
+     */
     public void changeToStage(HideableStage newStage) {
         currentStage.hide();
         currentStage = newStage;

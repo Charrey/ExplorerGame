@@ -15,7 +15,16 @@ import com.charrey.game.util.file.filechooser.SaveCallback;
 import java.io.File;
 import java.util.function.Supplier;
 
+/**
+ * Button that saves the current game state to a file when clicked. This uses the last used save location by default,
+ * otherwise the file that was loaded from (if a save file was loaded), otherwise prompts the user to select a save
+ * location.
+ */
 public class SaveButton extends TextButton {
+    /**
+     * Creates a new SaveButton
+     * @param saveState provides a string representation of the current game specification
+     */
     public SaveButton(Supplier<String> saveState) {
         super("Save", SkinUtils.getSkin());
         addListener(new InputListener() {

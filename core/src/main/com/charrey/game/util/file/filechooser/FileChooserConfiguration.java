@@ -26,6 +26,9 @@ package com.charrey.game.util.file.filechooser;
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
+/**
+ * Configuration of the file chooser.
+ */
 public record FileChooserConfiguration(File directory, String title, FileFilter nameFilter, String approveText) {
 
 

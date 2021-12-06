@@ -6,6 +6,9 @@ import com.charrey.game.util.file.FileUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
+/**
+ * Class that is called to save the string representation to a file.
+ */
 public record SaveCallback(Supplier<String> saveState) implements FileChooserCallback {
 
     @Override

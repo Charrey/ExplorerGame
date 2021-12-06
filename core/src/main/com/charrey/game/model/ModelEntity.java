@@ -11,6 +11,10 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.ToIntFunction;
 
+/**
+ * Class describing an entity that may reside in a block. This is decoupled since multiple objects (for example, moving
+ * blocks in crossing directions) may at some point be in the same position.
+ */
 public record ModelEntity(BlockType type,
                           Direction direction) implements Comparable<ModelEntity> {
 

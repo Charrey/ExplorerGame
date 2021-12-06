@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Pane at the bottom of the game view that provides high-level controls to the user.
+ */
 public class BottomPane extends Table {
 
     private final @NotNull ClearButton clearButton;
@@ -21,6 +24,11 @@ public class BottomPane extends Table {
     private Runnable stopSimulation;
     private Consumer<String> saveLoader;
 
+    /**
+     * Creates a new BottomPane
+     * @param width width of the BottomPane
+     * @param stageSwitcher interface used for switching to the main menu when the user desires
+     */
     public BottomPane(float width, @NotNull StageSwitcher stageSwitcher) {
         float buttonWidth = width / 6f;
         add(new MainMenuButton(() -> {
@@ -39,18 +47,34 @@ public class BottomPane extends Table {
         add(simulateButton).width(buttonWidth);
     }
 
+    /**
+     * Sets what should happen when the user clicks the reset button.
+     * @param reset method executed at button press.
+     */
     public void setResetButtonBehaviour(Runnable reset) {
         this.reset = reset;
     }
 
+    /**
+     * Sets how to retrieve a game state that can be written to a save file and in a later instance, loaded.
+     * @param gameStateStringSupplier provider of a save file string
+     */
     public void setSetGameStateString(Supplier<String> gameStateStringSupplier) {
         this.saveState = gameStateStringSupplier;
     }
 
+    /**
+     * Sets what should happen with a String loaded from a savefile when the user requests to load it.
+     * @param saveLoader method executed at load
+     */
     public void setSaveLoader(Consumer<String> saveLoader) {
         this.saveLoader = saveLoader;
     }
 
+    /**
+     * Sets the method called when the user wants to start the simulation.
+     * @param startSimulation the method that will be called
+     */
     public void setStartSimulation(@NotNull Runnable startSimulation) {
         this.startSimulation = () -> {
             clearButton.setDisabled(true);
@@ -62,6 +86,10 @@ public class BottomPane extends Table {
         };
     }
 
+    /**
+     * Sets the method called when the user wants to stop the current simulation.
+     * @param stopSimulation the method that will be called
+     */
     public void setStopSimulation(@NotNull Runnable stopSimulation) {
         this.stopSimulation = () -> {
             clearButton.setDisabled(false);

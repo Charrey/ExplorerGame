@@ -10,11 +10,14 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Used to store key-value String pairs that are maintained through multiple sessions (by storing them to a file).
+ */
 public class Cache {
 
     private Cache () {}
 
-    public static final String SETTINGS_FILENAME = "settings.json";
+    private static final String SETTINGS_FILENAME = "settings.json";
     private static Map<String, String> cachedProperties;
 
     static String get(String key) {
@@ -22,7 +25,10 @@ public class Cache {
         return cachedProperties.get(key);
     }
 
-
+    /**
+     * Saves the cache to a file.
+     * @throws IOException thrown when the file could not be written to.
+     */
     public static void save() throws IOException {
         if (cachedProperties != null) {
             Files.writeString(Paths.get(".").resolve(SETTINGS_FILENAME), new JSONObject(cachedProperties).toString());

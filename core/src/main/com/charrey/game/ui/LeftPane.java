@@ -20,6 +20,10 @@ import static com.charrey.game.BlockType.*;
 import static com.charrey.game.Direction.*;
 
 
+/**
+ * Pane on the left hand side of the user interface in which the user selects which block (pointing which direction) is used
+ * when interacting with the game field.
+ */
 public final class LeftPane extends Table {
 
     private TextButton selected;
@@ -27,6 +31,10 @@ public final class LeftPane extends Table {
     private Direction blockDirection = NOT_APPLICCABLE;
 
 
+    /**
+     * Creates a new LeftPane with a specific height.
+     * @param height height of the pane
+     */
     public LeftPane(float height) {
         addLeftButton("empty", null, NOT_APPLICCABLE);
         addLeftButton("barrier", BARRIER, NOT_APPLICCABLE);
@@ -70,17 +78,27 @@ public final class LeftPane extends Table {
         add(button).row();
     }
 
-
+    /**
+     * Ran when this Actor's stage is swapped out of context. Unselects the current block.
+     */
     public void hide() {
         InputEvent event = new InputEvent();
         event.setListenerActor(selected);
         selected.getClickListener().touchUp(event, 0, 0, 0, 0);
     }
 
+    /**
+     * Returns which block type the user has currently selected.
+     * @return block type
+     */
     public @Nullable BlockType getBlockSelected() {
         return blockSelected;
     }
 
+    /**
+     * Returns which block direction the user has currently selected.
+     * @return block type.
+     */
     public Direction getBlockDirection() {
         return blockDirection;
     }

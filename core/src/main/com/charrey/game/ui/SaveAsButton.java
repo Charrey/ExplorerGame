@@ -13,7 +13,16 @@ import com.charrey.game.util.file.filechooser.SaveCallback;
 
 import java.util.function.Supplier;
 
+/**
+ * Button in the bottom of the user interface that saves the current specification to a file. This button will always
+ * prompt the user to select a file location, contrary to the SaveButton class that uses the last used save location
+ * by default.
+ */
 public class SaveAsButton extends TextButton {
+    /**
+     * Creates a new SaveAsbutton
+     * @param saveState provides a string representation of the current game specification
+     */
     public SaveAsButton(Supplier<String> saveState) {
         super("Save as", SkinUtils.getSkin());
         addListener(new InputListener() {

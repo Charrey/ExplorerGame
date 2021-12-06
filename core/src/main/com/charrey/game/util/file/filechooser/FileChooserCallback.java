@@ -25,11 +25,20 @@ package com.charrey.game.util.file.filechooser;
 
 import com.badlogic.gdx.files.FileHandle;
 
-
+/**
+ * Interface that is called by the UI file chooser to handle the results of the file chooser.
+ */
 public interface FileChooserCallback {
 
+	/**
+	 * Method executed when the user has selected a file
+	 * @param file file selected
+	 */
 	void onFileChosen(FileHandle file);
 
+	/**
+	 * Method executed when the user cancels the file selection operation
+	 */
 	void onCancellation();
 
 }

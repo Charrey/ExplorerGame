@@ -9,17 +9,19 @@ import com.badlogic.gdx.utils.Collections;
 import com.charrey.game.StageSwitcher;
 import com.charrey.game.stage.actor.GameField;
 import com.charrey.game.stage.actor.MouseIndicator;
-import com.charrey.game.ui.context.ContextMenu;
-import com.charrey.game.ui.context.ContextMenuItem;
 import com.charrey.game.ui.BottomPane;
 import com.charrey.game.ui.LeftPane;
+import com.charrey.game.ui.context.ContextMenu;
+import com.charrey.game.ui.context.ContextMenuItem;
 import com.charrey.game.util.SkinUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-
+/**
+ * Stage describing the actual game part of the game.
+ */
 public class ExploreGameStage extends HideableStage {
 
     private final @NotNull LeftPane leftPane;
@@ -30,6 +32,10 @@ public class ExploreGameStage extends HideableStage {
         Collections.allocateIterators = true;
     }
 
+    /**
+     * Creates a new GameStage.
+     * @param stageSwitcher used to switch to other stages if the user desires
+     */
     public ExploreGameStage(@NotNull StageSwitcher stageSwitcher) {
         Table layout = new Table(SkinUtils.getSkin());
 

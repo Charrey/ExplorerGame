@@ -9,11 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.logging.Logger;
 
+/**
+ * Circle that follows the mouse cursur. This can be used in debugging to obtain coordinates of Actors.
+ */
 public class MouseIndicator extends Actor {
 
     private final @NotNull Texture texture;
     private static final boolean ENABLED = false;
 
+    /**
+     * Creates a new mouse indicator.
+     */
     public MouseIndicator() {
         Pixmap map = new Pixmap(20, 20, Pixmap.Format.RGBA8888);
         map.setColor(1, 1, 0, 0.5f);

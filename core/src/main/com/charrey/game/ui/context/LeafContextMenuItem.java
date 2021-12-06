@@ -7,8 +7,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+/**
+ * Contextmenu item that performs some task when clicked and has no subitems
+ */
 public class LeafContextMenuItem extends ContextMenuItem {
 
+    /**
+     * Creates a new LeafContextMenuItem.
+     * @param text text on the contextmenu item
+     * @param onClick task performed when the contextmenu item is clicked
+     */
     public LeafContextMenuItem(String text, @NotNull Runnable onClick) {
         super(text);
         addCaptureListener(new ClickListener(){

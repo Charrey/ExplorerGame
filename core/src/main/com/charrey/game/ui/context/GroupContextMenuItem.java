@@ -15,6 +15,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
+/**
+ * Contextmenu item that houses a submenu and performs no operation when clicked. The submenu appears when hovering over
+ * this menuitem.
+ */
 public class GroupContextMenuItem extends ContextMenuItem {
 
     @NotNull
@@ -26,6 +30,11 @@ public class GroupContextMenuItem extends ContextMenuItem {
         return super.getPrefWidth() + 30;
     }
 
+    /**
+     * Creates a new GroupContextMenuItem
+     * @param text text to be shown on the item
+     * @param children Methods that may be used to create the items in the submenu.
+     */
     public GroupContextMenuItem(String text, @NotNull List<Supplier<ContextMenuItem>> children) {
         super(text);
         GroupContextMenuItem groupContextMenuItem = this;
@@ -34,10 +43,11 @@ public class GroupContextMenuItem extends ContextMenuItem {
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 super.enter(event, x, y, pointer, fromActor);
                 if (subMenu == null || subMenu.getStage() == null) {
-                    subMenu = new ContextMenu("child-of-" + text, parentMenu.depth + 1);
+                    subMenu = new ContextMenu(((ContextMenu )getParent()).getDepth() + 1);
+                    subMenu.setName("child-of-" + text);
                     getStage().getRoot().addActor(subMenu);
                     children.forEach(contextMenuItemSupplier -> subMenu.add(contextMenuItemSupplier.get()));
-                    Vector2 coordinates = localToStageCoordinates(new Vector2(getX() + getWidth(), getY() - (parentMenu.getHeight() - getHeight())));
+                    Vector2 coordinates = localToStageCoordinates(new Vector2(getX() + getWidth(), getY() - (getParent().getHeight() - getHeight())));
                     subMenu.setX(coordinates.x);
                     subMenu.setY(coordinates.y);
                 }
@@ -53,8 +63,8 @@ public class GroupContextMenuItem extends ContextMenuItem {
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 super.exit(event, x, y, pointer, toActor);
-                if (groupContextMenuItem != toActor && toActor instanceof ContextMenuItem item && item.parentMenu.depth <= parentMenu.depth) {
-                    Arrays.stream(getStage().getRoot().getChildren().toArray()).filter(actor -> actor instanceof ContextMenu menu && menu.depth > parentMenu.depth).forEach(Actor::remove);
+                if (groupContextMenuItem != toActor && toActor instanceof ContextMenuItem item && ((ContextMenu)item.getParent()).getDepth() <= ((ContextMenu)getParent()).getDepth()) {
+                    Arrays.stream(getStage().getRoot().getChildren().toArray()).filter(actor -> actor instanceof ContextMenu menu && menu.getDepth() > ((ContextMenu)getParent()).getDepth()).forEach(Actor::remove);
                 }
             }
         });
