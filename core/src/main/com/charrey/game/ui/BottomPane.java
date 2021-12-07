@@ -1,10 +1,12 @@
 package com.charrey.game.ui;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.charrey.game.StageSwitcher;
 import com.charrey.game.stage.ExploreStage;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -18,6 +20,8 @@ public class BottomPane extends Table {
     private final @NotNull SaveAsButton saveAsButton;
     private final @NotNull LoadButton loadButton;
     private final @NotNull SimulateButton simulateButton;
+    private final @NotNull SpeedSlider simulationSpeed;
+
     private Supplier<String> saveState;
     private Runnable reset;
     private Runnable startSimulation;
@@ -30,7 +34,7 @@ public class BottomPane extends Table {
      * @param stageSwitcher interface used for switching to the main menu when the user desires
      */
     public BottomPane(float width, @NotNull StageSwitcher stageSwitcher) {
-        float buttonWidth = width / 6f;
+        float buttonWidth = width / 7f;
         add(new MainMenuButton(() -> {
             stopSimulation.run();
             stageSwitcher.changeToStage(ExploreStage.MENU);
@@ -40,11 +44,15 @@ public class BottomPane extends Table {
         this.saveAsButton = new SaveAsButton(() -> saveState.get());
         this.loadButton = new LoadButton(s -> saveLoader.accept(s));
         this.simulateButton = new SimulateButton(() -> startSimulation.run(), () -> stopSimulation.run());
-        add(clearButton).width(buttonWidth);
-        add(saveButton).width(buttonWidth);
-        add(saveAsButton).width(buttonWidth);
-        add(loadButton).width(buttonWidth);
-        add(simulateButton).width(buttonWidth);
+        this.simulationSpeed = new SpeedSlider(buttonWidth);
+        add(clearButton);
+        add(saveButton);
+        add(saveAsButton);
+        add(loadButton);
+        add(simulateButton);
+        add(simulationSpeed);
+        float cellHeight = (float) Arrays.stream(getCells().toArray(Cell.class)).mapToDouble(Cell::getPrefHeight).max().getAsDouble();
+        getCells().forEach(cell -> cell.width(buttonWidth).height(cellHeight));
     }
 
     /**
