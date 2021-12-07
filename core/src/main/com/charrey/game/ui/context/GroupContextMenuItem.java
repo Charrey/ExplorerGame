@@ -48,6 +48,10 @@ public class GroupContextMenuItem extends ContextMenuItem {
                     getStage().getRoot().addActor(subMenu);
                     children.forEach(contextMenuItemSupplier -> subMenu.add(contextMenuItemSupplier.get()));
                     Vector2 coordinates = localToStageCoordinates(new Vector2(getX() + getWidth(), getY() - (getParent().getHeight() - getHeight())));
+                    //test whether the submenu extends past the top of the screen
+                    if (getStage().getHeight() - (coordinates.y + subMenu.getHeight()) < 0) {
+                        coordinates.y -= subMenu.getHeight() - groupContextMenuItem.getHeight();
+                    }
                     subMenu.setX(coordinates.x);
                     subMenu.setY(coordinates.y);
                 }

@@ -65,8 +65,14 @@ public class BlockClickListener extends ClickListener {
 
             menu.add(new GroupContextMenuItem("Set direction to", List.of(leftItem, rightItem, upItem, downItem)));
             menu.add(new LeafContextMenuItem("Clear", () -> block.getSpecification().removeAllModelEntities()));
-            menu.setX(block.localToStageCoordinates(new Vector2(x, y)).x + 1);
-            menu.setY(block.localToStageCoordinates(new Vector2(x, y)).y + 1);
+
+            Vector2 stageCoordinates = block.localToStageCoordinates(new Vector2(x, y));
+            //test whether the menu extends past the top of the screen
+            if (block.getStage().getHeight() - (stageCoordinates.y + menu.getHeight()) < 0) {
+                stageCoordinates.y -= menu.getHeight() + 2;
+            }
+            menu.setX(stageCoordinates.x + 1);
+            menu.setY(stageCoordinates.y + 1);
         } else if (button == 0) {
             replaceBlock();
         }
