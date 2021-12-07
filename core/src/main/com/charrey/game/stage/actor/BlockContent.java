@@ -1,6 +1,6 @@
 package com.charrey.game.stage.actor;
 
-import com.charrey.game.BlockType;
+import com.charrey.game.model.ModelEntity;
 
 /**
  * Provides information which block type is visibile on a block that might have multiple entities at once.
@@ -8,8 +8,9 @@ import com.charrey.game.BlockType;
 public interface BlockContent {
 
     /**
-     * Returns which block type should be rendered on this block.
-     * @return which block type should be rendered on this block.
+     * Returns which entity should be rendered on this block.
+     * @return which entity should be rendered on this block.
      */
-    BlockType getVisibleBlockType();
+    ModelEntity getVisibleEntity();
+
 }

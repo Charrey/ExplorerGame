@@ -174,7 +174,7 @@ public class SimulatedBlockContent implements BlockContent {
     }
 
     @Override
-    public @Nullable BlockType getVisibleBlockType() {
-        return currentState.isEmpty() ? null : currentState.first().type();
+    public @Nullable ModelEntity getVisibleEntity() {
+        return currentState.isEmpty() ? null : currentState.first();
     }
 }

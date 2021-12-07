@@ -1,5 +1,6 @@
 package com.charrey.game.stage.actor;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.charrey.game.texture.GameFieldBlockTextureCache;
@@ -36,7 +37,8 @@ public class GameFieldBlock extends Actor {
     public void draw(@NotNull Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         if (!TestGenie.isAmIUnderTest()) {
-            batch.draw(GameFieldBlockTextureCache.get(currentContent.getVisibleBlockType(), (int) getWidth(), (int) getHeight()), getX(), getY());
+            Texture texture = GameFieldBlockTextureCache.get(currentContent.getVisibleEntity(), (int) getWidth(), (int) getHeight());
+            batch.draw(texture, getX(), getY(), getWidth(), getHeight());
         }
     }
 

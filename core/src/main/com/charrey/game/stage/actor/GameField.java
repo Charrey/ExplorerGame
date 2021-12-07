@@ -62,6 +62,8 @@ public class GameField extends Group {
         pixels.setColor(0.5f, 0.5f, 0.5f, 1);
         pixels.fill();
         texture = new Texture(pixels);
+        setWidth(this.pixelWidth);
+        setHeight(this.pixelHeight);
     }
 
     private void addBlocks(@NotNull NewBlockSpecifier specifier) {
@@ -149,6 +151,13 @@ public class GameField extends Group {
             JSONObject data = new JSONObject(serialized);
             this.pixelHeight = (Integer) data.get("pixelHeight");
             this.pixelWidth = (Integer) data.get("pixelWidth");
+            setWidth(this.pixelWidth);
+            setHeight(this.pixelHeight);
+            Pixmap pixels = new Pixmap(Math.round(getWidth()), Math.round(getHeight()), RGB888);
+            pixels.setColor(0.5f, 0.5f, 0.5f, 1);
+            pixels.fill();
+            texture = new Texture(pixels);
+
             JSONArray columnsJSON = ((JSONArray) data.get("cells"));
             cellsInRow = columnsJSON.length();
             cellsInColumn = -1;
@@ -187,10 +196,10 @@ public class GameField extends Group {
         }
     }
 
-    private int cellsInRow = 10;
-    private int cellsInColumn = 10;
+    private int cellsInRow = 50;
+    private int cellsInColumn = 50;
 
-    private final @NotNull Texture texture;
+    private @NotNull Texture texture;
 
     @Override
     public void draw(@NotNull Batch batch, float parentAlpha) {
@@ -222,7 +231,7 @@ public class GameField extends Group {
     public void startSimulation() {
         simulating = true;
         forEachBlock(gameFieldBlock -> {
-            if (gameFieldBlock.getSpecification().getVisibleBlockType() != null) {
+            if (gameFieldBlock.getSpecification().getVisibleEntity() != null) {
                 canAct.add(gameFieldBlock);
             }
         });

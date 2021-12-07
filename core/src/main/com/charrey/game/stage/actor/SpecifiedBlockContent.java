@@ -1,6 +1,5 @@
 package com.charrey.game.stage.actor;
 
-import com.charrey.game.BlockType;
 import com.charrey.game.model.ModelEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +33,8 @@ public class SpecifiedBlockContent implements BlockContent {
     }
 
     @Override
-    public @Nullable BlockType getVisibleBlockType() {
-        return entities.isEmpty() ? null : entities.first().type();
+    public @Nullable ModelEntity getVisibleEntity() {
+        return entities.isEmpty() ? null : entities.first();
     }
 
     /**

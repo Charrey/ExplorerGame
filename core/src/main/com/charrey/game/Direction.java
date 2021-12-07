@@ -2,6 +2,8 @@ package com.charrey.game;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Consumer;
+
 /**
  * Enum listing the directions a block can face.
  */
@@ -70,5 +72,16 @@ public enum Direction {
             case RIGHT -> LEFT;
             case NOT_APPLICCABLE -> NOT_APPLICCABLE;
         };
+    }
+
+    /**
+     * Performs an operation for each wind direction (thus excluding NOT_APPLICABLE)
+     * @param consumer the operation
+     */
+    public static void forEachConcrete(Consumer<Direction> consumer) {
+        consumer.accept(UP);
+        consumer.accept(DOWN);
+        consumer.accept(LEFT);
+        consumer.accept(RIGHT);
     }
 }
