@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ExploreMainMenuStage extends HideableStage {
 
-    final TextButton playButton;
+    final @NotNull TextButton playButton;
 
     /**
      * Creates a new MainMenuStage.
@@ -31,8 +31,17 @@ public class ExploreMainMenuStage extends HideableStage {
                 return true;
             }
         });
-        table.add(playButton).width(100).pad(10);
-        table.row();
+        table.add(playButton).width(100).pad(10).row();
+        TextButton settingsButton = new TextButton("Settings", SkinUtils.getSkin());
+        settingsButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                settingsButton.getClickListener().cancel();
+                stageSwitcher.changeToStage(ExploreStage.SETTINGS);
+                return true;
+            }
+        });
+        table.add(settingsButton).width(100).pad(10).row();
         TextButton quitButton = new TextButton("Quit", SkinUtils.getSkin());
         quitButton.addListener(new InputListener() {
             @Override

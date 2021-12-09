@@ -18,7 +18,9 @@ public class CachedGameFieldBlockTexture extends CachedTexture {
 
     /**
      * Creates a new texture for a game block that consists of a square of a solid colour with a black border.
+     * The texture may be different for the direction a block is facing, e.g. of a split explorer.
      * @param color the colour of the square
+     * @param direction the direction of the entity
      */
     public CachedGameFieldBlockTexture(Color color, Direction direction) {
         this.color = color;

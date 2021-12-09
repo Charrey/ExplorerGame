@@ -42,4 +42,13 @@ public record ModelEntity(BlockType type,
     public int hashCode() {
         return Objects.hash(direction, type);
     }
+
+    @Override
+    public @NotNull String toString() {
+        return switch (type) {
+            case BARRIER -> "X";
+            case SPLIT_EXPLORER -> "E";
+            case RANDOM_EXPLORER -> "R";
+        };
+    }
 }

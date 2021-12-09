@@ -51,7 +51,7 @@ public class BottomPane extends Table {
         add(loadButton);
         add(simulateButton);
         add(simulationSpeed);
-        float cellHeight = (float) Arrays.stream(getCells().toArray(Cell.class)).mapToDouble(Cell::getPrefHeight).max().getAsDouble();
+        float cellHeight = (float) Arrays.stream(getCells().toArray(Cell.class)).mapToDouble(Cell::getPrefHeight).max().orElse(100);
         getCells().forEach(cell -> cell.width(buttonWidth).height(cellHeight));
     }
 
@@ -107,5 +107,13 @@ public class BottomPane extends Table {
             simulateButton.setViewStopped();
             stopSimulation.run();
         };
+    }
+
+    /**
+     * Returns the user set requested simulation speed
+     * @return simulation speed in steps per second
+     */
+    public Long getSimulationsPerSecond() {
+        return simulationSpeed.get();
     }
 }

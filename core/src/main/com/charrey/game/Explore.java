@@ -3,11 +3,9 @@ package com.charrey.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.charrey.game.stage.ExploreGameStage;
-import com.charrey.game.stage.ExploreMainMenuStage;
-import com.charrey.game.stage.ExploreStage;
-import com.charrey.game.stage.HideableStage;
+import com.charrey.game.stage.*;
 import com.charrey.game.util.file.Cache;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -22,6 +20,7 @@ public class Explore extends Game implements StageSwitcher {
 
     private ExploreMainMenuStage mainMenuStage;
     private ExploreGameStage gameStage;
+    private ExploreSettingsStage settingsStage;
 
     private HideableStage currentStage;
 
@@ -30,6 +29,7 @@ public class Explore extends Game implements StageSwitcher {
     public void create() {
         mainMenuStage = new ExploreMainMenuStage(this);
         gameStage = new ExploreGameStage(this);
+        settingsStage = new ExploreSettingsStage(this);
         currentStage = mainMenuStage;
         Gdx.input.setInputProcessor(currentStage);
     }
@@ -39,12 +39,14 @@ public class Explore extends Game implements StageSwitcher {
         super.resize(width, height);
         mainMenuStage.getViewport().update(width, height, true);
         gameStage.getViewport().update(width, height, true);
+        settingsStage.getViewport().update(width, height, true);
     }
 
     @Override
     public void dispose() {
         mainMenuStage.dispose();
         gameStage.dispose();
+        settingsStage.dispose();
         try {
             Cache.save();
         } catch (IOException e) {
@@ -75,11 +77,11 @@ public class Explore extends Game implements StageSwitcher {
     }
 
     @Override
-    public void changeToStage(ExploreStage stage) {
-        if (stage == ExploreStage.GAME) {
-            changeToStage(gameStage);
-        } else if (stage == ExploreStage.MENU) {
-            changeToStage(mainMenuStage);
+    public void changeToStage(@NotNull ExploreStage stage) {
+        switch (stage) {
+            case GAME -> changeToStage(gameStage);
+            case MENU -> changeToStage(mainMenuStage);
+            case SETTINGS -> changeToStage(settingsStage);
         }
     }
 }

@@ -43,14 +43,14 @@ class SaveFileTest {
 
     @Test
     void testSaveFileCreation() {
-        GameField gameField = new GameField(1000, 1000, () -> null, () -> Direction.NOT_APPLICCABLE);
+        GameField gameField = new GameField(1000, 1000, () -> null, () -> Direction.NOT_APPLICCABLE, () -> 1L);
         new SaveCallback(gameField::serialize).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
         assertTrue(SAVE_DIRECTORY.child("test.explore").exists());
     }
 
     @Test
     void testEmptySaveFileValidJSON() {
-        GameField gameField = new GameField(1000, 1000, () -> null, () -> Direction.NOT_APPLICCABLE);
+        GameField gameField = new GameField(1000, 1000, () -> null, () -> Direction.NOT_APPLICCABLE, () -> 1L);
         new SaveCallback(gameField::serialize).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
         String read = SAVE_DIRECTORY.child("test.explore").readString();
         try {
@@ -66,7 +66,8 @@ class SaveFileTest {
         GameField gameField = new GameField(1000,
                 1000,
                 () -> BlockType.values()[random.nextInt(BlockType.values().length)],
-                () -> Direction.values()[random.nextInt(Direction.values().length)]);
+                () -> Direction.values()[random.nextInt(Direction.values().length)],
+                () -> 1L);
         new SaveCallback(gameField::serialize).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
         String read = SAVE_DIRECTORY.child("test.explore").readString();
         try {

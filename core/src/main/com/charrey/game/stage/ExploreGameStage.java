@@ -41,7 +41,7 @@ public class ExploreGameStage extends HideableStage {
 
         BottomPane bottomPane = new BottomPane(getWidth(), stageSwitcher);
         leftPane = new LeftPane(getHeight() - bottomPane.getPrefHeight());
-        gameField = new GameField(1000, 1000, leftPane::getBlockSelected, leftPane::getBlockDirection);
+        gameField = new GameField(900, 900, leftPane::getBlockSelected, leftPane::getBlockDirection, bottomPane::getSimulationsPerSecond);
 
         bottomPane.setResetButtonBehaviour(gameField::reset);
         bottomPane.setSetGameStateString(gameField::serialize);
@@ -51,7 +51,7 @@ public class ExploreGameStage extends HideableStage {
             try {
                 gameField.stopSimulation();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         });
 

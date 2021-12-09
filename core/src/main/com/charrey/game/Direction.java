@@ -78,7 +78,7 @@ public enum Direction {
      * Performs an operation for each wind direction (thus excluding NOT_APPLICABLE)
      * @param consumer the operation
      */
-    public static void forEachConcrete(Consumer<Direction> consumer) {
+    public static void forEachConcrete(@NotNull Consumer<Direction> consumer) {
         consumer.accept(UP);
         consumer.accept(DOWN);
         consumer.accept(LEFT);

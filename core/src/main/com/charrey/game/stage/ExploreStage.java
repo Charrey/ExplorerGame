@@ -11,5 +11,9 @@ public enum ExploreStage {
     /**
      * Main menu stage
      */
-    MENU
+    MENU,
+    /**
+     * Settings stage
+     */
+    SETTINGS
 }

@@ -3,6 +3,7 @@ package com.charrey.game.stage.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.charrey.game.simulator.SimulatorSettings;
 import com.charrey.game.texture.GameFieldBlockTextureCache;
 import com.charrey.game.util.testwrap.TestGenie;
 import org.jetbrains.annotations.NotNull;
@@ -21,15 +22,22 @@ public class GameFieldBlock extends Actor {
 
     private BlockContent currentContent;
 
+    @Override
+    public String toString() {
+        return currentContent.toString();
+    }
+
 
     /**
      * Creates a new GameFieldBlock
      * @param registerForSimulation called with blocks that may change in the next simulation step.
+     * @param registerChanged called with blocks that have changed in the next simulation step
+     * @param execution simulation type (serially or parallely)
      */
-    public GameFieldBlock(@NotNull Consumer<GameFieldBlock> registerForSimulation) {
+    public GameFieldBlock(@NotNull Consumer<GameFieldBlock> registerForSimulation, @NotNull Consumer<GameFieldBlock> registerChanged, SimulatorSettings.ExecutionType execution) {
         setTouchable(enabled);
         specification =  new SpecifiedBlockContent();
-        simulation = new SimulatedBlockContent(() -> registerForSimulation.accept(this));
+        simulation = new SimulatedBlockContent(() -> registerForSimulation.accept(this), () -> registerChanged.accept(this), execution);
         currentContent = specification;
     }
 

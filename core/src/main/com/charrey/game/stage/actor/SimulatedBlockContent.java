@@ -3,12 +3,14 @@ package com.charrey.game.stage.actor;
 import com.charrey.game.BlockType;
 import com.charrey.game.Direction;
 import com.charrey.game.model.ModelEntity;
+import com.charrey.game.simulator.SimulatorSettings;
 import com.charrey.game.util.Pair;
 import com.charrey.game.util.random.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * Class that keeps track of the simulated content of a single gamefieldblock.
@@ -16,38 +18,54 @@ import java.util.*;
 public class SimulatedBlockContent implements BlockContent {
 
     private final Runnable registerForSimulation;
+    private final Runnable registerChanged;
 
     @NotNull
     private final SortedSet<ModelEntity> invariant = new TreeSet<>();
     @NotNull
-    private final SortedSet<ModelEntity> currentState = new TreeSet<>();
+    private SortedSet<ModelEntity> currentState;
     @NotNull
-    private final SortedSet<ModelEntity> nextState = new TreeSet<>();
+    private SortedSet<ModelEntity> nextState;
+
 
     SimulatedBlockContent left;
     SimulatedBlockContent right;
     SimulatedBlockContent up;
     SimulatedBlockContent down;
 
+
     /**
      * Creates a new SimulatedBlockContent.
      * @param registerForSimulation Called when this block should be simulated in the next step.
+     * @param registerChanged Called when this block is different in the next step
+     * @param executionType The type of simulation (serial or parallel). Decides whether thread safety is implemented.
      */
-    public SimulatedBlockContent(Runnable registerForSimulation) {
+    public SimulatedBlockContent(Runnable registerForSimulation, Runnable registerChanged, SimulatorSettings.ExecutionType executionType) {
         this.registerForSimulation = registerForSimulation;
+        this.registerChanged = registerChanged;
+        this.nextState = switch (executionType) {
+            case SERIAL -> new TreeSet<>();
+            case PARALLEL -> new ConcurrentSkipListSet<>();
+        };
+        this.currentState = switch (executionType) {
+            case SERIAL -> new TreeSet<>();
+            case PARALLEL -> new ConcurrentSkipListSet<>();
+        };
     }
 
     private void addToNextStep(ModelEntity modelEntity) {
         nextState.add(modelEntity);
         registerForSimulation.run();
+        registerChanged.run();
     }
 
     /**
      * Processes any state changes initiated by other blocks.
      */
     public void step() {
-        currentState.clear();
-        currentState.addAll(nextState);
+        @NotNull SortedSet<ModelEntity> temp = currentState;
+        currentState = nextState;
+        nextState = temp;
         nextState.clear();
         nextState.addAll(invariant);
     }
@@ -57,7 +75,7 @@ public class SimulatedBlockContent implements BlockContent {
      * called their step() method.
      */
     public void simulateStep() {
-        Iterator<ModelEntity> iterator = currentState.iterator();
+        Iterator<ModelEntity> iterator = new TreeSet<>(currentState).iterator();
         ModelEntity simulating;
         while (iterator.hasNext()) {
             simulating = iterator.next();
@@ -69,6 +87,7 @@ public class SimulatedBlockContent implements BlockContent {
             SimulatedBlockContent blockLeft = getBlockAt(Direction.rotateLeft(simulating.direction()));
             SimulatedBlockContent blockRight = getBlockAt(Direction.rotateRight(simulating.direction()));
             iterator.remove();
+            registerChanged.run();
             if (simulating.type() == BlockType.SPLIT_EXPLORER) {
                 simulateSplitExplorer(simulating.direction(), lookingAt, blockLeft, blockRight);
             } else if (simulating.type() == BlockType.RANDOM_EXPLORER) {
@@ -90,8 +109,6 @@ public class SimulatedBlockContent implements BlockContent {
             forward.addToNextStep(new ModelEntity(BlockType.SPLIT_EXPLORER, direction));
         }
     }
-
-
 
     private void simulateRandomExplorer(Direction direction, @NotNull SimulatedBlockContent forward, @NotNull SimulatedBlockContent left, @NotNull SimulatedBlockContent right, @NotNull SimulatedBlockContent back) {
         if (forward.hasBarrier()) {
@@ -176,5 +193,10 @@ public class SimulatedBlockContent implements BlockContent {
     @Override
     public @Nullable ModelEntity getVisibleEntity() {
         return currentState.isEmpty() ? null : currentState.first();
+    }
+
+    @Override
+    public String toString() {
+        return currentState.toString();
     }
 }
