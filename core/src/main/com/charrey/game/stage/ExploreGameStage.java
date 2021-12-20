@@ -7,14 +7,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Collections;
 import com.charrey.game.StageSwitcher;
+import com.charrey.game.model.Direction;
 import com.charrey.game.model.serialize.GridLoader;
 import com.charrey.game.stage.actor.GameField;
-import com.charrey.game.util.mouse.MouseIndicator;
 import com.charrey.game.ui.BottomPane;
 import com.charrey.game.ui.LeftPane;
 import com.charrey.game.ui.context.ContextMenu;
 import com.charrey.game.ui.context.ContextMenuItem;
 import com.charrey.game.util.SkinUtils;
+import com.charrey.game.util.mouse.MouseHistory;
+import com.charrey.game.util.mouse.MouseHistoryRecord;
+import com.charrey.game.util.mouse.MouseIndicator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -64,6 +67,19 @@ public class ExploreGameStage extends HideableStage {
         show();
     }
 
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        MouseHistoryRecord lastTouchDown = MouseHistory.lastTouchDown();
+        if (lastTouchDown.target() == gameField) {
+            Direction direction = Direction.relativeDirection(new Vector2(lastTouchDown.screenX(), lastTouchDown.screenY()), new Vector2(screenX, screenY));
+            if (direction != null) {
+                gameField.setDirectionLastAdded(direction);
+            }
+        }
+        return super.touchDragged(screenX, screenY, pointer);
+    }
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == 0) {
@@ -81,6 +97,8 @@ public class ExploreGameStage extends HideableStage {
         }
         return super.touchDown(screenX, screenY, pointer, button);
     }
+
+
 
     @Override
     public void show() {

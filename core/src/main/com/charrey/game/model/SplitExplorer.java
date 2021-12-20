@@ -12,11 +12,10 @@ import java.util.*;
  * it instead disappears and ejects a copy of itself from its left- and right side (if there are no barricades to its left
  * or right side, respectively).
  */
-public class SplitExplorer extends Simulatable {
+public class SplitExplorer extends DirectionalSimulatable {
 
 
-    private Direction direction;
-    private Direction nextDirection;
+
     private static final Map<Direction, CachedGameFieldBlockTexture> textures = new EnumMap<>(Direction.class);
 
     static {
@@ -29,45 +28,43 @@ public class SplitExplorer extends Simulatable {
      * @param location location of the explorer
      */
     public SplitExplorer(Direction direction, GridItem location) {
-        super(location, 0, 1, 1);
-        this.direction = direction;
-        this.nextDirection = direction;
+        super(location, direction, 0, 1, 1);
     }
 
     @Override
     public Simulatable copy() {
-        return new SplitExplorer(direction, getLocation());
+        return new SplitExplorer(getDirection(), getLocation());
     }
 
     @Override
     public void simulateStep() {
-        Set<Simulatable> inFrontOfMe = getInDirection(direction);
+        Set<Simulatable> inFrontOfMe = getInDirection(getDirection());
         if (inFrontOfMe.stream().anyMatch(Barrier.class::isInstance)) {
             Set<Direction> toSpawnIn = EnumSet.noneOf(Direction.class);
-            if (getInDirection(direction.rotateLeft()).stream().noneMatch(Barrier.class::isInstance)) {
-                toSpawnIn.add(direction.rotateLeft());
+            if (getInDirection(getDirection().rotateLeft()).stream().noneMatch(Barrier.class::isInstance)) {
+                toSpawnIn.add(getDirection().rotateLeft());
             }
-            if (getInDirection(direction.rotateRight()).stream().noneMatch(Barrier.class::isInstance)) {
-                toSpawnIn.add(direction.rotateRight());
+            if (getInDirection(getDirection().rotateRight()).stream().noneMatch(Barrier.class::isInstance)) {
+                toSpawnIn.add(getDirection().rotateRight());
             }
             if (toSpawnIn.isEmpty()) {
                 removeInNextStep();
             } else {
                 Iterator<Direction> iterator = toSpawnIn.iterator();
-                this.nextDirection = iterator.next();
-                advance(nextDirection);
+                this.setDirection(iterator.next());
+                advance(getNextDirection());
                 if (iterator.hasNext()) {
-                    SplitExplorer splitOff = new SplitExplorer(nextDirection.opposite(), getLocation());
+                    SplitExplorer splitOff = new SplitExplorer(getNextDirection().opposite(), getLocation());
                     splitOff.setContainingGrid(getGrid());
                     splitOff.advanceNow();
                     addInNextStep(splitOff);
                 }
             }
         } else {
-            advance(direction);
+            advance(getDirection());
         }
-//        super.simulateStep();
     }
+
 
     private void advance(Direction direction) {
         switch(direction) {
@@ -79,7 +76,7 @@ public class SplitExplorer extends Simulatable {
     }
 
     private void advanceNow() {
-        switch(direction) {
+        switch(getDirection()) {
             case UP -> moveNow(0, 1);
             case DOWN -> moveNow(0, -1);
             case LEFT -> moveNow(-1, 0);
@@ -87,20 +84,15 @@ public class SplitExplorer extends Simulatable {
         }
     }
 
-    @Override
-    public void stateSwitchStep() {
-        direction = nextDirection;
-        super.stateSwitchStep();
-    }
 
     @Override
     public Texture getTexture(int xOffset, int yOffset, int textureWidth, int textureHeight) {
-        return textures.get(direction).get(textureWidth, textureHeight);
+        return textures.get(getDirection()).get(textureWidth, textureHeight);
     }
 
     @Override
     public String shortName() {
-        return "S" + switch (direction) {
+        return "S" + switch (getDirection()) {
             case DOWN -> "d";
             case UP -> "^";
             case RIGHT -> ">";
@@ -113,19 +105,6 @@ public class SplitExplorer extends Simulatable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SplitExplorer that = (SplitExplorer) o;
-        return direction == that.direction && getLocation().equals(that.getLocation()) /*&& getPhase() == that.getPhase()*/;
-    }
-
-    @Override
-    public int hashCode() {
-        return direction.hashCode();
-    }
-
-    /**
-     * Returns the direction this explorer is facing.
-     * @return the direction
-     */
-    public Direction getDirection() {
-        return direction;
+        return getDirection() == that.getDirection() && getLocation().equals(that.getLocation()) /*&& getPhase() == that.getPhase()*/;
     }
 }

@@ -191,6 +191,4 @@ public abstract class Simulatable {
      * @return short representation
      */
     public abstract String shortName();
-
-
 }

@@ -7,12 +7,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.charrey.game.settings.Settings;
 import com.charrey.game.model.BlockType;
+import com.charrey.game.model.Direction;
+import com.charrey.game.model.DirectionalSimulatable;
 import com.charrey.game.model.Grid;
 import com.charrey.game.model.serialize.GridLoader;
 import com.charrey.game.model.serialize.XMLLoader;
 import com.charrey.game.model.serialize.XMLSerializer;
+import com.charrey.game.settings.Settings;
 import com.charrey.game.simulator.Simulator;
 import com.charrey.game.ui.context.ContextMenu;
 import com.charrey.game.ui.context.LeafContextMenuItem;
@@ -115,9 +117,8 @@ public class GameField extends Group {
 
     /**
      * Stops the simulation
-     * @throws InterruptedException Thrown when the thread is interrupted while waiting for the simulation thread to finish
      */
-    public void stopSimulation() throws InterruptedException {
+    public void stopSimulation() {
         simulator.stop();
         grid.copy(backup);
         Settings.currentlySimulating = false;
@@ -127,16 +128,32 @@ public class GameField extends Group {
      * Toggles the simulation, i.e. starts it if inactive and stops it if active.
      */
     public void toggleSimulation() {
-        try {
-            if (Settings.currentlySimulating) {
-                stopSimulation();
-            } else {
-                startSimulation();
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        if (Settings.currentlySimulating) {
+            stopSimulation();
+        } else {
+            startSimulation();
         }
     }
+
+    /**
+     * Sets the direction of the simulatable that was most recently added by the user.
+     * Does nothing if no simulatable has been added, the last simulatable has no direction property or the last
+     * interaction was removal of a simulatable.
+     * @param direction new direction
+     */
+    public void setDirectionLastAdded(Direction direction) {
+        if (lastClick != null) {
+            grid.getAtWrappedGridLocation(lastClick).forEach(simulatable -> {
+                if (simulatable instanceof DirectionalSimulatable dir) {
+                    dir.setDirectionNow(direction);
+                }
+            });
+        }
+
+    }
+
+    private GridItem lastClick = null;
+
 
     private class GameFieldClickHandler extends InputListener {
 
@@ -155,15 +172,8 @@ public class GameField extends Group {
             if (!Settings.currentlySimulating) {
                 contextMenu.add(new LeafContextMenuItem("Clear", grid::clear));
             } else {
-                contextMenu.add(new LeafContextMenuItem("Stop simulation", () -> {
-                    try {
-                        GameField.this.stopSimulation();
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }));
+                contextMenu.add(new LeafContextMenuItem("Stop simulation", GameField.this::stopSimulation));
             }
-
             getStage().getRoot().addActor(contextMenu);
             contextMenu.setX(stageCoordinates.x + 1);
             contextMenu.setY(stageCoordinates.y + 1);
@@ -174,11 +184,11 @@ public class GameField extends Group {
                 BlockType type = Settings.newBlockType;
                 int columnIndex = (int) (cellsInRow * (localCoordinates.x / getWidth()));
                 int rowIndex = (int) (cellsInColumn * (localCoordinates.y / getHeight()));
-                GridItem location = new GridItem(columnIndex, rowIndex);
+                lastClick = new GridItem(columnIndex, rowIndex);
                 if (type != null) {
-                    grid.add(type.getSimple(Settings.newBlockDirection, location));
+                    grid.add(type.getSimple(Settings.newBlockDirection, lastClick));
                 } else {
-                    grid.remove(location);
+                    grid.remove(lastClick);
                 }
             }
         }

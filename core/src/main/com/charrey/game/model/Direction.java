@@ -1,5 +1,6 @@
 package com.charrey.game.model;
 
+import com.badlogic.gdx.math.Vector2;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -24,6 +25,32 @@ public enum Direction {
      * Pointing to the right
      */
     RIGHT;
+
+    /**
+     * Provides the direction of a point in a 2D plane relative to another point.
+     * @param from relative point
+     * @param to point to retrieve the direction of
+     * @return direction of the point
+     */
+    public static Direction relativeDirection(Vector2 from, Vector2 to) {
+        Vector2 vector = new Vector2(to.x - from.x, from.y - to.y);
+        int aboveFxisX = Float.compare(vector.y, vector.x);
+        int aboveFxisMinusX = Float.compare(vector.y, -vector.x);
+        if (aboveFxisX == 1) {
+            if (aboveFxisMinusX == 1) {
+                return UP;
+            } else if (aboveFxisMinusX == -1) {
+                return LEFT;
+            }
+        } else if (aboveFxisX == -1) {
+            if (aboveFxisMinusX == 1) {
+                return RIGHT;
+            } else {
+                return DOWN;
+            }
+        }
+        return null;
+    }
 
     /**
      * Returns the direction 270 degrees to the right (or 90 degrees to the left) of this direction
