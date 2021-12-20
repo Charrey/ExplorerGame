@@ -2,10 +2,10 @@ package com.charrey.game.texture;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.charrey.game.Direction;
+import com.charrey.game.model.Direction;
 import org.jetbrains.annotations.NotNull;
 
-import static com.charrey.game.Direction.*;
+import static com.charrey.game.model.Direction.*;
 
 /**
  * A (cached) texture for a game block that consists of a square of a solid colour with a black border.

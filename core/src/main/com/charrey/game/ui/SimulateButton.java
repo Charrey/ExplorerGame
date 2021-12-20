@@ -3,6 +3,7 @@ package com.charrey.game.ui;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.charrey.game.settings.Settings;
 import com.charrey.game.util.SkinUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,42 +12,25 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SimulateButton extends TextButton {
 
-
-    boolean simulationRunning = false;
-
     /**
      * Creates a new SimulateButton
-     * @param startSimulation Ran when the user wants the simulation to start
-     * @param stopSimulation Ran when the user wants the simulation to stop
+     * @param toggleSimulation Ran when the user clicks this button
+     *
      */
-    public SimulateButton(@NotNull Runnable startSimulation, @NotNull Runnable stopSimulation) {
+    public SimulateButton(@NotNull Runnable toggleSimulation) {
         super("Simulate", SkinUtils.getSkin());
         addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                if (simulationRunning) {
-                    stopSimulation.run();
-                } else {
-                    startSimulation.run();
-                }
+                toggleSimulation.run();
                 return true;
             }
         });
     }
 
-    /**
-     * Changes the view of this button to correspond to a simulation state.
-     */
-    public void setViewSimulating() {
-        setText("Stop");
-        simulationRunning = true;
-    }
-
-    /**
-     * Changes the view of this button to correspond to a specification state.
-     */
-    public void setViewStopped() {
-        setText("Simulate");
-        simulationRunning = false;
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        setText(Settings.currentlySimulating ? "Stop" : "Simulate");
     }
 }

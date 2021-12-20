@@ -4,19 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
-import com.charrey.game.BlockType;
-import com.charrey.game.Direction;
 import com.charrey.game.Explore;
-import com.charrey.game.stage.actor.GameField;
+import com.charrey.game.model.*;
+import com.charrey.game.model.serialize.GridLoader;
+import com.charrey.game.model.serialize.XMLLoader;
+import com.charrey.game.model.serialize.XMLSerializer;
+import com.charrey.game.util.GridItem;
 import com.charrey.game.util.file.filechooser.SaveCallback;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-import java.util.Random;
+import java.nio.charset.Charset;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SaveFileTest {
 
@@ -43,37 +44,77 @@ class SaveFileTest {
 
     @Test
     void testSaveFileCreation() {
-        GameField gameField = new GameField(1000, 1000, () -> null, () -> Direction.NOT_APPLICCABLE, () -> 1L);
-        new SaveCallback(gameField::serialize).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
+        Grid grid = new Grid(1, 1);
+        new SaveCallback(() -> XMLSerializer.get().serialize(grid)).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
         assertTrue(SAVE_DIRECTORY.child("test.explore").exists());
     }
 
     @Test
-    void testEmptySaveFileValidJSON() {
-        GameField gameField = new GameField(1000, 1000, () -> null, () -> Direction.NOT_APPLICCABLE, () -> 1L);
-        new SaveCallback(gameField::serialize).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
-        String read = SAVE_DIRECTORY.child("test.explore").readString();
+    void testEmptySaveFileValid() {
+        Grid grid = new Grid(1, 1);
+        System.out.println(grid);
+        new SaveCallback(() -> XMLSerializer.get().serialize(grid)).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
+        String written = SAVE_DIRECTORY.child("test.explore").readString(Charset.defaultCharset().name());
         try {
-            new JSONObject(read);
-        } catch (JSONException e) {
-            fail("A JSON error occured, meaning invalid JSON was written to the save file.");
+            Grid gotten = XMLLoader.get().load(written);
+            System.out.println(gotten);
+        } catch (GridLoader.SaveFormatException e) {
+            e.printStackTrace();
+            fail();
         }
     }
 
     @Test
-    void testRandomSaveFileValidJSON() {
-        Random random = new Random(16);
-        GameField gameField = new GameField(1000,
-                1000,
-                () -> BlockType.values()[random.nextInt(BlockType.values().length)],
-                () -> Direction.values()[random.nextInt(Direction.values().length)],
-                () -> 1L);
-        new SaveCallback(gameField::serialize).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
-        String read = SAVE_DIRECTORY.child("test.explore").readString();
+    void testGridDimensionsValid() {
+        Grid grid = new Grid(69, 42);
+        new SaveCallback(() -> XMLSerializer.get().serialize(grid)).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
+        String written = SAVE_DIRECTORY.child("test.explore").readString(Charset.defaultCharset().name());
         try {
-            new JSONObject(read);
-        } catch (JSONException e) {
-            fail("A JSON error occured, meaning invalid JSON was written to the save file.");
+            Grid gotten = XMLLoader.get().load(written);
+            assertEquals(42, gotten.getHeight());
+            assertEquals(69, gotten.getWidth());
+        } catch (GridLoader.SaveFormatException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void testBarrierStoredInGrid() {
+        Grid grid = new Grid(1, 1);
+        grid.add(new Barrier(new GridItem(0, 0)));
+        new SaveCallback(() -> XMLSerializer.get().serialize(grid)).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
+        String written = SAVE_DIRECTORY.child("test.explore").readString(Charset.defaultCharset().name());
+        try {
+            Grid gotten = XMLLoader.get().load(written);
+            assertEquals(1, gotten.getSimulatables().size());
+            Simulatable simulatable = gotten.getSimulatables().iterator().next();
+            assertTrue(simulatable instanceof Barrier);
+            assertEquals(0, simulatable.getLocation().x());
+            assertEquals(0, simulatable.getLocation().y());
+        } catch (GridLoader.SaveFormatException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void testSplitExplorerStoredInGrid() {
+        Grid grid = new Grid(1, 1);
+        grid.add(new SplitExplorer(Direction.RIGHT, new GridItem(0, 0)));
+        new SaveCallback(() -> XMLSerializer.get().serialize(grid)).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
+        String written = SAVE_DIRECTORY.child("test.explore").readString(Charset.defaultCharset().name());
+        try {
+            Grid gotten = XMLLoader.get().load(written);
+            assertEquals(1, gotten.getSimulatables().size());
+            Simulatable simulatable = gotten.getSimulatables().iterator().next();
+            assertTrue(simulatable instanceof SplitExplorer);
+            assertEquals(0, simulatable.getLocation().x());
+            assertEquals(0, simulatable.getLocation().y());
+            assertEquals(Direction.RIGHT, ((SplitExplorer) simulatable).getDirection());
+        } catch (GridLoader.SaveFormatException e) {
+            e.printStackTrace();
+            fail();
         }
     }
 }

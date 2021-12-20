@@ -7,8 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Collections;
 import com.charrey.game.StageSwitcher;
+import com.charrey.game.model.serialize.GridLoader;
 import com.charrey.game.stage.actor.GameField;
-import com.charrey.game.stage.actor.MouseIndicator;
+import com.charrey.game.util.mouse.MouseIndicator;
 import com.charrey.game.ui.BottomPane;
 import com.charrey.game.ui.LeftPane;
 import com.charrey.game.ui.context.ContextMenu;
@@ -38,23 +39,21 @@ public class ExploreGameStage extends HideableStage {
      */
     public ExploreGameStage(@NotNull StageSwitcher stageSwitcher) {
         Table layout = new Table(SkinUtils.getSkin());
-
-        BottomPane bottomPane = new BottomPane(getWidth(), stageSwitcher);
+        gameField = new GameField(900, 900);
+        BottomPane bottomPane = new BottomPane(
+                getWidth(),
+                stageSwitcher,
+                gameField::reset,
+                gameField::serialize,
+                serialized -> {
+                    try {
+                        gameField.load(serialized);
+                    } catch (GridLoader.SaveFormatException e) {
+                        e.printStackTrace();
+                    }
+                },
+                gameField::toggleSimulation);
         leftPane = new LeftPane(getHeight() - bottomPane.getPrefHeight());
-        gameField = new GameField(900, 900, leftPane::getBlockSelected, leftPane::getBlockDirection, bottomPane::getSimulationsPerSecond);
-
-        bottomPane.setResetButtonBehaviour(gameField::reset);
-        bottomPane.setSetGameStateString(gameField::serialize);
-        bottomPane.setSaveLoader(gameField::load);
-        bottomPane.setStartSimulation(gameField::startSimulation);
-        bottomPane.setStopSimulation(() -> {
-            try {
-                gameField.stopSimulation();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        });
-
         layout.add(leftPane).left();
         layout.add(gameField).left().row();
         layout.add(bottomPane).colspan(2);
@@ -77,6 +76,8 @@ public class ExploreGameStage extends HideableStage {
                     return true;
                 }
             }
+        } else if (button == 1) {
+            ContextMenu.removeAll(this);
         }
         return super.touchDown(screenX, screenY, pointer, button);
     }

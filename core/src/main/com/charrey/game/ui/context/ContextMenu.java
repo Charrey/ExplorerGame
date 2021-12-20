@@ -3,12 +3,14 @@ package com.charrey.game.ui.context;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 /**
  * Context menu similar to a 'right click' in Windows Explorer. Can have sub-contextmenus.
@@ -27,6 +29,15 @@ public class ContextMenu extends Table {
         this.depth = depth;
         setDebug(true);
         addClickListener();
+    }
+
+    /**
+     * Removes all context menus from a stage
+     * @param stage stage to remove from
+     */
+    public static void removeAll(Stage stage) {
+        List<Actor> list = StreamSupport.stream(stage.getRoot().getChildren().select(ContextMenu.class::isInstance).spliterator(), false).toList();
+        list.forEach(Actor::remove);
     }
 
 

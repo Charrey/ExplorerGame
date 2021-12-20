@@ -4,20 +4,20 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.charrey.game.BlockType;
-import com.charrey.game.Direction;
+import com.charrey.game.settings.Settings;
+import com.charrey.game.model.BlockType;
+import com.charrey.game.model.Direction;
 import com.charrey.game.util.SkinUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static com.charrey.game.BlockType.*;
-import static com.charrey.game.Direction.*;
+import static com.charrey.game.model.BlockType.BARRIER;
+import static com.charrey.game.model.BlockType.SPLIT_EXPLORER;
+import static com.charrey.game.model.Direction.*;
 
 
 /**
@@ -27,8 +27,6 @@ import static com.charrey.game.Direction.*;
 public final class LeftPane extends Table {
 
     private TextButton selected;
-    private @Nullable BlockType blockSelected = null;
-    private Direction blockDirection = NOT_APPLICCABLE;
 
 
     /**
@@ -36,8 +34,8 @@ public final class LeftPane extends Table {
      * @param height height of the pane
      */
     public LeftPane(float height) {
-        addLeftButton("empty", null, NOT_APPLICCABLE);
-        addLeftButton("barrier", BARRIER, NOT_APPLICCABLE);
+        addLeftButton("empty", null, null);
+        addLeftButton("barrier", BARRIER, null);
         addLeftButton("up", SPLIT_EXPLORER, UP);
         addLeftButton("down", SPLIT_EXPLORER, DOWN);
         addLeftButton("left", SPLIT_EXPLORER, LEFT);
@@ -64,8 +62,8 @@ public final class LeftPane extends Table {
                 event.cancel();
                 selected.getClickListener().touchUp(event, 0f, 0f, 0, 0);
                 selected = button;
-                blockDirection = direction;
-                blockSelected = type;
+                Settings.newBlockDirection = direction;
+                Settings.newBlockType = type;
                 selected.getClickListener().touchDown(event, 0f, 0f, 0, 0);
                 return true;
             }
@@ -85,21 +83,5 @@ public final class LeftPane extends Table {
         InputEvent event = new InputEvent();
         event.setListenerActor(selected);
         selected.getClickListener().touchUp(event, 0, 0, 0, 0);
-    }
-
-    /**
-     * Returns which block type the user has currently selected.
-     * @return block type
-     */
-    public @Nullable BlockType getBlockSelected() {
-        return blockSelected;
-    }
-
-    /**
-     * Returns which block direction the user has currently selected.
-     * @return block type.
-     */
-    public Direction getBlockDirection() {
-        return blockDirection;
     }
 }

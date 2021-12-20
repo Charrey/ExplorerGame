@@ -1,9 +1,9 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.stage.actor.GameFieldBlock;
-import org.jetbrains.annotations.NotNull;
+import com.charrey.game.model.Grid;
+import com.charrey.game.model.Simulatable;
 
-import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,15 +19,14 @@ public class ParallelSemanticSimulationStep implements SemanticSimulationStep {
     private final Lock parallelExecutionLock = new ReentrantLock();
     private final ThreadPoolExecutor concurrentExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
-
     @Override
-    public void executeOneStep(@NotNull Set<GameFieldBlock> actingWaitList) {
+    public void executeOneStep(Grid grid) {
         parallelExecutionLock.lock();
-        AtomicInteger remaining = new AtomicInteger(actingWaitList.size());
+        AtomicInteger remaining = new AtomicInteger(grid.getSimulatables().size());
         Condition done = parallelExecutionLock.newCondition();
-        for (GameFieldBlock block : actingWaitList) {
+        for (Simulatable simulatable : new HashSet<>(grid.getSimulatables())) {
             concurrentExecutor.execute(() -> {
-                block.getSimulation().simulateStep();
+                simulatable.simulateStep();
                 if (remaining.decrementAndGet() == 0) {
                     parallelExecutionLock.lock();
                     done.signal();

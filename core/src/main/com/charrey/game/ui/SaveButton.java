@@ -4,6 +4,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.charrey.game.settings.Settings;
 import com.charrey.game.util.SkinUtils;
 import com.charrey.game.util.file.ExploreSaveFileFilter;
 import com.charrey.game.util.file.FileUtils;
@@ -40,5 +41,11 @@ public class SaveButton extends TextButton {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        setDisabled(Settings.currentlySimulating);
     }
 }

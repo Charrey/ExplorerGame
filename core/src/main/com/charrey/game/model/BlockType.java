@@ -1,4 +1,6 @@
-package com.charrey.game;
+package com.charrey.game.model;
+
+import com.charrey.game.util.GridItem;
 
 /**
  * Enum that lists different block types that have different interactions.
@@ -19,5 +21,19 @@ public enum BlockType {
      * Block that moves in a specific direction at each simulation step. When it encounters a barrier, it chooses a random
      * non-blocked direction to go in (except for the direction it came from). If no such direction exists, it disappears.
      */
-    RANDOM_EXPLORER
+    RANDOM_EXPLORER;
+
+    /**
+     * Creates a simulatable of this type
+     * @param direction direction that this simulatable faces (or null if direction is not applicable)
+     * @param location location of the simulatable in the grid it will be added to
+     * @return a simulatable
+     */
+    public Simulatable getSimple(Direction direction, GridItem location) {
+        return switch (this) {
+            case BARRIER -> new Barrier(location);
+            case SPLIT_EXPLORER -> new SplitExplorer(direction, location);
+            case RANDOM_EXPLORER -> throw new UnsupportedOperationException();
+        };
+    }
 }

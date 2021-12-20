@@ -1,4 +1,4 @@
-package com.charrey.game.stage.actor;
+package com.charrey.game.util.mouse;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 /**
@@ -24,6 +25,7 @@ public class MouseIndicator extends Actor {
         Pixmap map = new Pixmap(20, 20, Pixmap.Format.RGBA8888);
         map.setColor(1, 1, 0, 0.5f);
         map.fillCircle(10, 10, 10);
+        Logger.getLogger(getClass().getName()).addHandler(new ConsoleHandler());
         texture = new Texture(map);
     }
 
@@ -34,10 +36,10 @@ public class MouseIndicator extends Actor {
         super.act(delta);
         setX(Gdx.input.getX());
         setY(getStage().getHeight() - Gdx.input.getY());
-        if (System.currentTimeMillis() > lastPrint + 5000) {
+        if (System.currentTimeMillis() > lastPrint + 2000) {
             lastPrint = System.currentTimeMillis();
             if (ENABLED) {
-                Logger.getLogger(getClass().getName()).finest(() -> "MOUSE x=" + getX() + " y=" + getY());
+                Logger.getLogger(getClass().getName()).info(() -> "MOUSE x=" + getX() + " y=" + getY());
             }
         }
     }

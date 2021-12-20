@@ -1,18 +1,17 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.stage.actor.GameFieldBlock;
-import org.jetbrains.annotations.NotNull;
+import com.charrey.game.model.Grid;
+import com.charrey.game.model.Simulatable;
 
-import java.util.Set;
+import java.util.HashSet;
 
 /**
  * Performs the simulation step of the simulator in series (using a single computation thread)
  */
 public class SerialSemanticSimulationStep implements SemanticSimulationStep {
+
     @Override
-    public void executeOneStep(@NotNull Set<GameFieldBlock> actingWaitList) {
-        for (GameFieldBlock block : actingWaitList) {
-            block.getSimulation().simulateStep();
-        }
+    public void executeOneStep(Grid grid) {
+        new HashSet<>(grid.getSimulatables()).forEach(Simulatable::simulateStep);
     }
 }

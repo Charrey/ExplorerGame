@@ -1,10 +1,9 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.stage.actor.GameFieldBlock;
-import org.jetbrains.annotations.NotNull;
+import com.charrey.game.model.Grid;
+import com.charrey.game.model.Simulatable;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,17 +19,15 @@ public class ParallelStateSwitchSimulationStep implements StateSwitchSimulationS
     private final Lock parallelExecutionLock = new ReentrantLock();
     private final ThreadPoolExecutor concurrentExecutor = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
+
     @Override
-    public void nextStep(@NotNull Set<GameFieldBlock> haveChanged) {
+    public void nextStep(Grid grid) {
         parallelExecutionLock.lock();
-        AtomicInteger remaining = new AtomicInteger(haveChanged.size());
+        AtomicInteger remaining = new AtomicInteger(grid.getSimulatables().size());
         Condition done = parallelExecutionLock.newCondition();
-        while (!haveChanged.isEmpty()) {
-            Iterator<GameFieldBlock> iterator = haveChanged.iterator();
-            GameFieldBlock block = iterator.next();
-            iterator.remove();
+        for (Simulatable simulatable : new HashSet<>(grid.getSimulatables())) {
             concurrentExecutor.execute(() -> {
-                block.getSimulation().step();
+                simulatable.stateSwitchStep();
                 if (remaining.decrementAndGet() == 0) {
                     parallelExecutionLock.lock();
                     done.signal();
