@@ -1,6 +1,10 @@
 package saves;
 
-import com.charrey.game.model.*;
+import com.charrey.game.model.Direction;
+import com.charrey.game.model.Grid;
+import com.charrey.game.model.simulatable.DefaultBarrier;
+import com.charrey.game.model.simulatable.Simulatable;
+import com.charrey.game.model.simulatable.SplitExplorer;
 import com.charrey.game.simulator.ParallelSemanticSimulationStep;
 import com.charrey.game.simulator.ParallelStateSwitchSimulationStep;
 import com.charrey.game.simulator.SerialSemanticSimulationStep;
@@ -24,7 +28,7 @@ class SimulatorTest {
             Grid grid = new Grid(3, 3);
             grid.add(new SplitExplorer(Direction.RIGHT, new GridItem(0, 1)));
             grid.add(new SplitExplorer(Direction.UP, new GridItem(1, 0)));
-            grid.add(new Barrier(new GridItem(2, 1)));
+            grid.add(new DefaultBarrier(new GridItem(2, 1)));
             for (int i = 0; i < 10; i++) {
                 List<Simulatable> toBeSimulated = new ArrayList<>(grid.getSimulatables());
                 Collections.shuffle(toBeSimulated, random);
@@ -56,7 +60,7 @@ class SimulatorTest {
         for (int j = 0; j < 50; j++) {
             Grid grid = new Grid(5, 5);
             grid.add(new SplitExplorer(Direction.UP, new GridItem(1, 1)));
-            grid.add(new Barrier(new GridItem(1, 3)));
+            grid.add(new DefaultBarrier(new GridItem(1, 3)));
             grid.add(new SplitExplorer(Direction.LEFT, new GridItem(2, 2)));
             for (int i = 0; i < 5; i++) {
                 new ParallelSemanticSimulationStep().executeOneStep(grid);

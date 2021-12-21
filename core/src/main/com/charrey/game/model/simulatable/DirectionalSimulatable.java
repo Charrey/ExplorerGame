@@ -1,5 +1,6 @@
-package com.charrey.game.model;
+package com.charrey.game.model.simulatable;
 
+import com.charrey.game.model.Direction;
 import com.charrey.game.util.GridItem;
 
 /**

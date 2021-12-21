@@ -5,10 +5,15 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import com.charrey.game.Explore;
-import com.charrey.game.model.*;
+import com.charrey.game.model.Direction;
+import com.charrey.game.model.Grid;
 import com.charrey.game.model.serialize.GridLoader;
 import com.charrey.game.model.serialize.XMLLoader;
 import com.charrey.game.model.serialize.XMLSerializer;
+import com.charrey.game.model.simulatable.Barrier;
+import com.charrey.game.model.simulatable.DefaultBarrier;
+import com.charrey.game.model.simulatable.Simulatable;
+import com.charrey.game.model.simulatable.SplitExplorer;
 import com.charrey.game.util.GridItem;
 import com.charrey.game.util.file.filechooser.SaveCallback;
 import org.junit.jupiter.api.AfterAll;
@@ -82,7 +87,7 @@ class SaveFileTest {
     @Test
     void testBarrierStoredInGrid() {
         Grid grid = new Grid(1, 1);
-        grid.add(new Barrier(new GridItem(0, 0)));
+        grid.add(new DefaultBarrier(new GridItem(0, 0)));
         new SaveCallback(() -> XMLSerializer.get().serialize(grid)).onFileChosen(SAVE_DIRECTORY.child("test.explore"));
         String written = SAVE_DIRECTORY.child("test.explore").readString(Charset.defaultCharset().name());
         try {

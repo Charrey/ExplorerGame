@@ -1,6 +1,8 @@
-package com.charrey.game.model;
+package com.charrey.game.model.simulatable;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.charrey.game.model.Direction;
+import com.charrey.game.model.Grid;
 import com.charrey.game.util.GridItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -191,4 +193,32 @@ public abstract class Simulatable {
      * @return short representation
      */
     public abstract String shortName();
+
+
+    /**
+     * Changes the simulatable's location (in the next step).
+     * @param direction direction to travel in
+     */
+    protected void advance(Direction direction) {
+        switch(direction) {
+            case UP -> move(0, 1);
+            case DOWN -> move(0, -1);
+            case LEFT -> move(-1, 0);
+            case RIGHT -> move(1, 0);
+        }
+    }
+
+    /**
+     * Changes the simulatable's location immediately (in the current step) by moving one step in the specified direction.
+     * This should only be called for simulatables that have not yet been added to a model.
+     * @param direction direction to travel in
+     */
+    protected void advanceNow(Direction direction) {
+        switch(direction) {
+            case UP -> moveNow(0, 1);
+            case DOWN -> moveNow(0, -1);
+            case LEFT -> moveNow(-1, 0);
+            case RIGHT -> moveNow(1, 0);
+        }
+    }
 }

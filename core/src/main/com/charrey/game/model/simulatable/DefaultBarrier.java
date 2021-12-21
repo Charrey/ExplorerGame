@@ -1,4 +1,4 @@
-package com.charrey.game.model;
+package com.charrey.game.model.simulatable;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -7,9 +7,9 @@ import com.charrey.game.texture.CachedTexture;
 import com.charrey.game.util.GridItem;
 
 /**
- * Simulatable that does not move, but serves as an obstacle for other simulatables.
+ * Barrier that is always active and non-moving
  */
-public class Barrier extends Simulatable {
+public class DefaultBarrier extends Barrier {
 
     private static final CachedTexture texture;
 
@@ -17,7 +17,7 @@ public class Barrier extends Simulatable {
         texture = new CachedTexture() {
             @Override
             protected void computeTexture(Pixmap pixels) {
-                pixels.setColor(new Color(0.5f, 0.5f, 0.5f, 1));
+                pixels.setColor(new Color(0.1f, 0.1f, 0.1f, 1));
                 pixels.fill();
                 pixels.setColor(0, 0, 0, 1);
                 pixels.drawRectangle(0, 0, pixels.getWidth(), pixels.getHeight());
@@ -27,16 +27,18 @@ public class Barrier extends Simulatable {
 
     /**
      * Creates a new Barrier
+     *
      * @param location location of the barrier
      */
-    public Barrier(GridItem location) {
-        super(location, 10, 1, 1);
+    public DefaultBarrier(GridItem location) {
+        super(location);
     }
 
     @Override
-    public void simulateStep() {
-
+    boolean isBlocking() {
+        return true;
     }
+
 
     @Override
     public Texture getTexture(int xOffset, int yOffset, int textureWidth, int textureHeight) {
@@ -45,12 +47,6 @@ public class Barrier extends Simulatable {
 
     @Override
     public Simulatable copy() {
-        return new Barrier(getLocation());
+        return new DefaultBarrier(getLocation());
     }
-
-    @Override
-    public String shortName() {
-        return "B";
-    }
-
 }

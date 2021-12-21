@@ -1,7 +1,8 @@
-package com.charrey.game.model;
+package com.charrey.game.model.simulatable;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.charrey.game.model.Direction;
 import com.charrey.game.texture.CachedGameFieldBlockTexture;
 import com.charrey.game.util.GridItem;
 
@@ -39,7 +40,7 @@ public class SplitExplorer extends DirectionalSimulatable {
     @Override
     public void simulateStep() {
         Set<Simulatable> inFrontOfMe = getInDirection(getDirection());
-        if (inFrontOfMe.stream().anyMatch(Barrier.class::isInstance)) {
+        if (inFrontOfMe.stream().anyMatch(obj -> obj instanceof Barrier barrier && barrier.isBlocking())) {
             Set<Direction> toSpawnIn = EnumSet.noneOf(Direction.class);
             if (getInDirection(getDirection().rotateLeft()).stream().noneMatch(Barrier.class::isInstance)) {
                 toSpawnIn.add(getDirection().rotateLeft());
@@ -56,7 +57,7 @@ public class SplitExplorer extends DirectionalSimulatable {
                 if (iterator.hasNext()) {
                     SplitExplorer splitOff = new SplitExplorer(getNextDirection().opposite(), getLocation());
                     splitOff.setContainingGrid(getGrid());
-                    splitOff.advanceNow();
+                    splitOff.advanceNow(splitOff.getDirection());
                     addInNextStep(splitOff);
                 }
             }
@@ -66,23 +67,7 @@ public class SplitExplorer extends DirectionalSimulatable {
     }
 
 
-    private void advance(Direction direction) {
-        switch(direction) {
-            case UP -> move(0, 1);
-            case DOWN -> move(0, -1);
-            case LEFT -> move(-1, 0);
-            case RIGHT -> move(1, 0);
-        }
-    }
 
-    private void advanceNow() {
-        switch(getDirection()) {
-            case UP -> moveNow(0, 1);
-            case DOWN -> moveNow(0, -1);
-            case LEFT -> moveNow(-1, 0);
-            case RIGHT -> moveNow(1, 0);
-        }
-    }
 
 
     @Override

@@ -15,8 +15,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-import static com.charrey.game.model.BlockType.BARRIER;
-import static com.charrey.game.model.BlockType.SPLIT_EXPLORER;
+import static com.charrey.game.model.BlockType.*;
 import static com.charrey.game.model.Direction.*;
 
 
@@ -36,10 +35,9 @@ public final class LeftPane extends Table {
     public LeftPane(float height) {
         addLeftButton("empty", null, null);
         addLeftButton("barrier", BARRIER, null);
-        addLeftButton("up", SPLIT_EXPLORER, UP);
-        addLeftButton("down", SPLIT_EXPLORER, DOWN);
-        addLeftButton("left", SPLIT_EXPLORER, LEFT);
-        addLeftButton("right", SPLIT_EXPLORER, RIGHT);
+        addLeftButton("conditional", CONDITIONAL_BARRIER, null);
+        addLeftButton("split", SPLIT_EXPLORER, UP);
+        addLeftButton("random", RANDOM_EXPLORER, UP);
 
         float buttonHeight = height / getChildren().toArray().length;
 

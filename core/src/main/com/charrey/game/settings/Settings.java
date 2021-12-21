@@ -3,7 +3,6 @@ package com.charrey.game.settings;
 import com.charrey.game.model.BlockType;
 import com.charrey.game.model.Direction;
 
-import static com.charrey.game.settings.ExecutionType.PARALLEL;
 import static com.charrey.game.settings.ExecutionType.SERIAL;
 
 /**
@@ -28,7 +27,7 @@ public class Settings {
     /**
      * How the simulator should compute the state switch step of the simulation
      */
-    public static ExecutionType stateSwitchStep = PARALLEL;
+    public static ExecutionType stateSwitchStep = SERIAL;
     /**
      * Type of block that should be placed if the user clicks on the game field while no simulation is running.
      */

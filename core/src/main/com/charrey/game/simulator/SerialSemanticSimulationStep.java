@@ -1,7 +1,7 @@
 package com.charrey.game.simulator;
 
 import com.charrey.game.model.Grid;
-import com.charrey.game.model.Simulatable;
+import com.charrey.game.model.simulatable.Simulatable;
 
 import java.util.HashSet;
 

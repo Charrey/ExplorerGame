@@ -3,6 +3,7 @@ package com.charrey.game.model;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.charrey.game.model.simulatable.Simulatable;
 import com.charrey.game.texture.CachedTexture;
 import com.charrey.game.util.GridItem;
 import org.apache.commons.lang3.StringUtils;

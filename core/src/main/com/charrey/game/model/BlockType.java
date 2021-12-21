@@ -1,5 +1,7 @@
 package com.charrey.game.model;
 
+import com.charrey.game.model.condition.False;
+import com.charrey.game.model.simulatable.*;
 import com.charrey.game.util.GridItem;
 
 /**
@@ -10,6 +12,11 @@ public enum BlockType {
      * Block that prevents other blocks from moving through it.
      */
     BARRIER,
+
+    /**
+     * Block that prevents other blocks from moving through it unless a condition is met.
+     */
+    CONDITIONAL_BARRIER,
 
     /**
      * Block that moves in a specific direction at each simulation step. When it encounters a barrier, it
@@ -31,9 +38,10 @@ public enum BlockType {
      */
     public Simulatable getSimple(Direction direction, GridItem location) {
         return switch (this) {
-            case BARRIER -> new Barrier(location);
+            case BARRIER -> new DefaultBarrier(location);
+            case CONDITIONAL_BARRIER -> new ConditionalBarrier(location, new False());
             case SPLIT_EXPLORER -> new SplitExplorer(direction, location);
-            case RANDOM_EXPLORER -> throw new UnsupportedOperationException();
+            case RANDOM_EXPLORER -> new RandomExplorer(direction, location);
         };
     }
 }
