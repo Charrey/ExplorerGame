@@ -12,10 +12,7 @@ import com.charrey.game.simulator.SerialStateSwitchSimulationStep;
 import com.charrey.game.util.GridItem;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,9 +23,9 @@ class SimulatorTest {
         Random random = new Random(1904735);
         for (int j = 0; j < 500; j++) {
             Grid grid = new Grid(3, 3);
-            grid.add(new SplitExplorer(Direction.RIGHT, new GridItem(0, 1)));
-            grid.add(new SplitExplorer(Direction.UP, new GridItem(1, 0)));
-            grid.add(new DefaultBarrier(new GridItem(2, 1)));
+            grid.add(SplitExplorer.factory(Direction.RIGHT).makeSimulatable(new GridItem(0, 1)));
+            grid.add(SplitExplorer.factory(Direction.UP).makeSimulatable(new GridItem(1, 0)));
+            grid.add(DefaultBarrier.factory().makeSimulatable(new GridItem(2, 1)));
             for (int i = 0; i < 10; i++) {
                 List<Simulatable> toBeSimulated = new ArrayList<>(grid.getSimulatables());
                 Collections.shuffle(toBeSimulated, random);
@@ -48,10 +45,12 @@ class SimulatorTest {
     @Test
     void testDuplicateExplorer2() {
         Grid grid = new Grid(3, 5);
-        grid.add(new SplitExplorer(Direction.UP, new GridItem(1, 1)));
-        grid.add(new SplitExplorer(Direction.UP, new GridItem(1, 2)));
-        new SerialSemanticSimulationStep().executeOneStep(grid);
-        new SerialStateSwitchSimulationStep().nextStep(grid);
+        Set<Simulatable> simulatableSet = new HashSet<>();
+        simulatableSet.add(SplitExplorer.factory(Direction.UP).makeSimulatable(new GridItem(1, 1)));
+        simulatableSet.add(SplitExplorer.factory(Direction.UP).makeSimulatable(new GridItem(1, 2)));
+        simulatableSet.forEach(grid::add);
+        new SerialSemanticSimulationStep().executeOneStep(simulatableSet);
+        new SerialStateSwitchSimulationStep().nextStep(simulatableSet);
         grid.updateMapAndDeduplicate();
     }
 
@@ -59,12 +58,14 @@ class SimulatorTest {
     void testParallelStateSwitch() {
         for (int j = 0; j < 50; j++) {
             Grid grid = new Grid(5, 5);
-            grid.add(new SplitExplorer(Direction.UP, new GridItem(1, 1)));
-            grid.add(new DefaultBarrier(new GridItem(1, 3)));
-            grid.add(new SplitExplorer(Direction.LEFT, new GridItem(2, 2)));
+            Set<Simulatable> simulatableSet = new HashSet<>();
+            simulatableSet.add(SplitExplorer.factory(Direction.UP).makeSimulatable(new GridItem(1, 1)));
+            simulatableSet.add(DefaultBarrier.factory().makeSimulatable(new GridItem(1, 3)));
+            simulatableSet.add(SplitExplorer.factory(Direction.LEFT).makeSimulatable(new GridItem(2, 2)));
+            simulatableSet.forEach(grid::add);
             for (int i = 0; i < 5; i++) {
-                new ParallelSemanticSimulationStep().executeOneStep(grid);
-                new ParallelStateSwitchSimulationStep().nextStep(grid);
+                new ParallelSemanticSimulationStep().executeOneStep(simulatableSet);
+                new ParallelStateSwitchSimulationStep().nextStep(simulatableSet);
                 grid.updateMapAndDeduplicate();
                 assertEquals(3, grid.getSimulatables().size());
             }

@@ -1,9 +1,10 @@
 package com.charrey.game.model.simulatable;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.charrey.game.model.Direction;
+import com.charrey.game.settings.NewBlockFactory;
 import com.charrey.game.texture.CachedGameFieldBlockTexture;
+import com.charrey.game.texture.Drawable;
 import com.charrey.game.util.GridItem;
 
 import java.util.*;
@@ -23,11 +24,37 @@ public class RandomExplorer extends DirectionalSimulatable {
 
     /**
      * Creates a new RandomExplorer
+     *
      * @param direction initial direction the explorer is facing
-     * @param location location of the explorer
+     * @param location  location of the explorer
      */
-    public RandomExplorer(Direction direction, GridItem location) {
+    private RandomExplorer(Direction direction, GridItem location) {
         super(location, direction, 1, 1, 1);
+    }
+
+    /**
+     * Returns a factory that provides dimensions imformation of a RandomExplorer and can create them.
+     *
+     * @param direction direction of the RandomExplorer
+     * @return the factory
+     */
+    public static NewBlockFactory<RandomExplorer> factory(Direction direction) {
+        return new NewBlockFactory<>() {
+            @Override
+            public int getWidth() {
+                return 1;
+            }
+
+            @Override
+            public int getHeight() {
+                return 1;
+            }
+
+            @Override
+            public RandomExplorer makeSimulatable(GridItem location) {
+                return new RandomExplorer(direction, location);
+            }
+        };
     }
 
     @Override
@@ -42,20 +69,20 @@ public class RandomExplorer extends DirectionalSimulatable {
                 toRotateTo.add(getDirection().rotateRight());
             }
             if (toRotateTo.isEmpty()) {
-                removeInNextStep();
+                removeFromMasterInNextStep();
             } else {
                 Collections.shuffle(toRotateTo);
-                this.setDirection(toRotateTo.get(0));
-                advance(getNextDirection());
+                setDirection(toRotateTo.get(0));
+                advance();
             }
         } else {
-            advance(getDirection());
+            advance();
         }
     }
 
     @Override
-    public Texture getTexture(int xOffset, int yOffset, int textureWidth, int textureHeight) {
-        return textures.get(getDirection()).get(textureWidth, textureHeight);
+    public Drawable getTexture(int xOffset, int yOffset, int textureWidth, int textureHeight) {
+        return textures.get(getDirection());
     }
 
     @Override
@@ -79,5 +106,10 @@ public class RandomExplorer extends DirectionalSimulatable {
         if (o == null || getClass() != o.getClass()) return false;
         RandomExplorer that = (RandomExplorer) o;
         return getDirection() == that.getDirection() && getLocation().equals(that.getLocation()) /*&& getPhase() == that.getPhase()*/;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

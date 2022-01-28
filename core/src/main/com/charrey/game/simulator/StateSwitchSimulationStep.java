@@ -1,6 +1,8 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.model.Grid;
+import com.charrey.game.model.simulatable.Simulatable;
+
+import java.util.Set;
 
 /**
  * Interface used by the simulator to set the next state of simulated blocks to the current state. This is an interface
@@ -10,7 +12,8 @@ public interface StateSwitchSimulationStep {
 
     /**
      * Sets the current step of a model to be equal to the computed step.
-     * @param grid model being simulated
+     *
+     * @param simulatables simulatables being simulated
      */
-    void nextStep(Grid grid);
+    void nextStep(Set<Simulatable> simulatables);
 }

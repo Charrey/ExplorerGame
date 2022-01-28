@@ -18,6 +18,7 @@ public class ExploreMainMenuStage extends HideableStage {
 
     /**
      * Creates a new MainMenuStage.
+     *
      * @param stageSwitcher used to switch to the game stage when the user desires to.
      */
     public ExploreMainMenuStage(@NotNull StageSwitcher stageSwitcher) {

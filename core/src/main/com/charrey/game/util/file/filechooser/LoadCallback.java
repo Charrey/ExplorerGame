@@ -8,13 +8,13 @@ import java.util.function.Consumer;
 /**
  * Class that is called to load a string from a file containing a savegame.
  */
-public record LoadCallback(Consumer<String> stringConsumer) implements FileChooserCallback {
+public record LoadCallback(Consumer<FileHandle> stringConsumer) implements FileChooserCallback {
 
     @Override
     public void onFileChosen(FileHandle file) {
         file = file.sibling(file.nameWithoutExtension() + ".explore");
         FileUtils.setLastSaveFile(file);
-        stringConsumer.accept(file.readString("UTF-8"));
+        stringConsumer.accept(file);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.charrey.game.StageSwitcher;
 public class ExploreSettingsStage extends HideableStage {
     /**
      * Creates a new settings stage
+     *
      * @param switcher Stage switcher used to change back to the main menu
      */
     public ExploreSettingsStage(StageSwitcher switcher) {

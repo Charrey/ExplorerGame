@@ -1,5 +1,6 @@
 package com.charrey.game.ui;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -19,9 +20,10 @@ import java.util.function.Consumer;
 public class LoadButton extends TextButton {
     /**
      * Creates a button that prompts the user to select a save file, after which the save file is loaded.
+     *
      * @param saveLoader what should happen with the content of the save file
      */
-    public LoadButton(Consumer<String> saveLoader) {
+    public LoadButton(Consumer<FileHandle> saveLoader) {
         super("Load", SkinUtils.getSkin());
         addListener(new InputListener() {
             @Override

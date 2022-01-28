@@ -14,13 +14,15 @@ public abstract class HideableStage extends Stage {
     /**
      * Called when the stage is shown in the window
      */
-    public void show() {}
+    public void show() {
+    }
 
 
     /**
      * Called when the stage is replaced by a different stage
      */
-    public void hide() {}
+    public void hide() {
+    }
 
 
     @Override

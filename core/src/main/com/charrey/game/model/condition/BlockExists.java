@@ -10,7 +10,8 @@ public class BlockExists extends ConditionWithReference {
 
     /**
      * Creates a new BlockExists condition
-     * @param grid model
+     *
+     * @param grid     model
      * @param location location in the model where no block should exist
      */
     public BlockExists(Grid grid, GridItem location) {

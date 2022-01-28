@@ -10,7 +10,8 @@ public class NotBlockExists extends ConditionWithReference {
 
     /**
      * Creates a new NotBlockExists condition
-     * @param grid model
+     *
+     * @param grid     model
      * @param location location in the model where no block should exist
      */
     public NotBlockExists(Grid grid, GridItem location) {

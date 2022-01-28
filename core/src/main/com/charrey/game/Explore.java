@@ -9,9 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import static org.lwjgl.opengl.Display.getHeight;
-import static org.lwjgl.opengl.Display.getWidth;
-
 /**
  * Game that provides a way for the player to specify different types of blocks in a grid. Then, in a simulation these
  * blocks interact in specific ways.
@@ -64,6 +61,7 @@ public class Explore extends Game implements StageSwitcher {
 
     /**
      * Sets which stage is shown in the window.
+     *
      * @param newStage stage to be shown
      */
     public void changeToStage(HideableStage newStage) {
@@ -71,9 +69,6 @@ public class Explore extends Game implements StageSwitcher {
         currentStage = newStage;
         currentStage.show();
         Gdx.input.setInputProcessor(currentStage);
-        //Perform an update with a slightly different size.
-        //Unfortunately, this is necessary to circumvent a LibGDX bug that prevents drawing straight lines.
-        gameStage.getViewport().update(getWidth(), getHeight() + 1, true);
     }
 
     @Override

@@ -8,4 +8,5 @@ public class False extends Condition {
     public boolean test() {
         return false;
     }
+
 }

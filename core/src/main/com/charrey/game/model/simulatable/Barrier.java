@@ -9,6 +9,7 @@ public abstract class Barrier extends Simulatable {
 
     /**
      * Creates a new Barrier
+     *
      * @param location location of the barrier
      */
     public Barrier(GridItem location) {
@@ -20,7 +21,12 @@ public abstract class Barrier extends Simulatable {
 
     }
 
-    abstract boolean isBlocking();
+    /**
+     * Returns whether the barrier is currently blocking movement of other simulatables
+     *
+     * @return whether this is blocking
+     */
+    public abstract boolean isBlocking();
 
     @Override
     public String shortName() {

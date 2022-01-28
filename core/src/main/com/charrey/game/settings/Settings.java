@@ -1,7 +1,7 @@
 package com.charrey.game.settings;
 
-import com.charrey.game.model.BlockType;
 import com.charrey.game.model.Direction;
+import com.charrey.game.model.simulatable.Simulatable;
 
 import static com.charrey.game.settings.ExecutionType.SERIAL;
 
@@ -9,8 +9,6 @@ import static com.charrey.game.settings.ExecutionType.SERIAL;
  * Monitors global state of the program and stores user-set parameters
  */
 public class Settings {
-
-    private Settings() {}
 
     /**
      * How many simulation per second the simulator should aim to achieve
@@ -31,13 +29,23 @@ public class Settings {
     /**
      * Type of block that should be placed if the user clicks on the game field while no simulation is running.
      */
-    public static BlockType newBlockType = null;
+    public static NewBlockFactory<? extends Simulatable> newBlockFactory = null;
     /**
      * Direction of block that should be placed if the user clicks on the game field while no simulation is running.
      */
-    public static Direction newBlockDirection = null;
+    public static Direction newBlockDirection = Direction.UP;
     /**
      * Whether a simulation is currently taking place
      */
     public static boolean currentlySimulating = false;
+    /**
+     * Default number of cells in a single row of the grid
+     */
+    public static int defaultWidth = 8;
+    /**
+     * Default number of cells in a single column of the grid
+     */
+    public static int defaultHeight = 8;
+    private Settings() {
+    }
 }

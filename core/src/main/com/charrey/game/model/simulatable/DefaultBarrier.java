@@ -2,8 +2,9 @@ package com.charrey.game.model.simulatable;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.charrey.game.settings.NewBlockFactory;
 import com.charrey.game.texture.CachedTexture;
+import com.charrey.game.texture.Drawable;
 import com.charrey.game.util.GridItem;
 
 /**
@@ -30,23 +31,52 @@ public class DefaultBarrier extends Barrier {
      *
      * @param location location of the barrier
      */
-    public DefaultBarrier(GridItem location) {
+    private DefaultBarrier(GridItem location) {
         super(location);
     }
 
+    /**
+     * Returns a factory that provides dimensions information of a DefaultBarrier and can create them.
+     *
+     * @return the factory
+     */
+    public static NewBlockFactory<DefaultBarrier> factory() {
+        return new NewBlockFactory<>() {
+            @Override
+            public int getWidth() {
+                return 1;
+            }
+
+            @Override
+            public int getHeight() {
+                return 1;
+            }
+
+            @Override
+            public DefaultBarrier makeSimulatable(GridItem location) {
+                return new DefaultBarrier(location);
+            }
+        };
+    }
+
     @Override
-    boolean isBlocking() {
+    public boolean isBlocking() {
         return true;
     }
 
-
     @Override
-    public Texture getTexture(int xOffset, int yOffset, int textureWidth, int textureHeight) {
-        return texture.get(textureWidth, textureHeight);
+    public Drawable getTexture(int xOffset, int yOffset, int textureWidth, int textureHeight) {
+        return texture;
     }
 
     @Override
     public Simulatable copy() {
         return new DefaultBarrier(getLocation());
     }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
 }

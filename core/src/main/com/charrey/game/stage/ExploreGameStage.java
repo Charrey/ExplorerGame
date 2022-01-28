@@ -8,8 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Collections;
 import com.charrey.game.StageSwitcher;
 import com.charrey.game.model.Direction;
-import com.charrey.game.model.serialize.GridLoader;
-import com.charrey.game.stage.actor.GameField;
+import com.charrey.game.model.serialize.SaveFormatException;
+import com.charrey.game.stage.griddisplay.GameArea;
 import com.charrey.game.ui.BottomPane;
 import com.charrey.game.ui.LeftPane;
 import com.charrey.game.ui.context.ContextMenu;
@@ -23,42 +23,38 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+import static com.charrey.game.util.ErrorUtils.showErrorMessage;
+
 /**
  * Stage describing the actual game part of the game.
  */
 public class ExploreGameStage extends HideableStage {
 
-    private final @NotNull LeftPane leftPane;
-
-    private final @NotNull GameField gameField;
-
     static {
         Collections.allocateIterators = true;
     }
 
+    private final @NotNull LeftPane leftPane;
+    private final @NotNull GameArea gameArea;
+
     /**
      * Creates a new GameStage.
+     *
      * @param stageSwitcher used to switch to other stages if the user desires
      */
     public ExploreGameStage(@NotNull StageSwitcher stageSwitcher) {
         Table layout = new Table(SkinUtils.getSkin());
-        gameField = new GameField(900, 900);
-        BottomPane bottomPane = new BottomPane(
-                getWidth(),
-                stageSwitcher,
-                gameField::reset,
-                gameField::serialize,
-                serialized -> {
-                    try {
-                        gameField.load(serialized);
-                    } catch (GridLoader.SaveFormatException e) {
-                        e.printStackTrace();
-                    }
-                },
-                gameField::toggleSimulation);
+        gameArea = new GameArea(900, 900);
+        BottomPane bottomPane = new BottomPane(getWidth(), stageSwitcher, gameArea::reset, gameArea.getGrid(), fileHandle -> {
+            try {
+                gameArea.load(fileHandle);
+            } catch (SaveFormatException e) {
+                showErrorMessage("Loaded file was corrupt:\n" + e.getMessage(), this);
+            }
+        }, gameArea::toggleSimulation);
         leftPane = new LeftPane(getHeight() - bottomPane.getPrefHeight());
         layout.add(leftPane).left();
-        layout.add(gameField).left().row();
+        layout.add(gameArea).left().row();
         layout.add(bottomPane).colspan(2);
         layout.setX(0 + layout.getPrefWidth() / 2);
         layout.setY(0 + layout.getPrefHeight() / 2);
@@ -71,10 +67,10 @@ public class ExploreGameStage extends HideableStage {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         MouseHistoryRecord lastTouchDown = MouseHistory.lastTouchDown();
-        if (lastTouchDown.target() == gameField) {
+        if (lastTouchDown.target() != null && gameArea.isAscendantOf(lastTouchDown.target())) {
             Direction direction = Direction.relativeDirection(new Vector2(lastTouchDown.screenX(), lastTouchDown.screenY()), new Vector2(screenX, screenY));
             if (direction != null) {
-                gameField.setDirectionLastAdded(direction);
+                gameArea.setDirectionLastAdded(direction);
             }
         }
         return super.touchDragged(screenX, screenY, pointer);
@@ -99,17 +95,15 @@ public class ExploreGameStage extends HideableStage {
     }
 
 
-
     @Override
     public void show() {
-        ((TextButton)leftPane.getChild(0)).getClickListener().touchDown(new InputEvent(), 0, 0, 0, 0);
+        ((TextButton) leftPane.getChild(0)).getClickListener().touchDown(new InputEvent(), 0, 0, 0, 0);
     }
 
     @Override
     public void hide() {
         leftPane.hide();
     }
-
 
 
 }

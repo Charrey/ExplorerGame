@@ -1,9 +1,9 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.model.Grid;
 import com.charrey.game.model.simulatable.Simulatable;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class performs the switch from current state to next state serially (in one thread).
@@ -11,8 +11,7 @@ import java.util.HashSet;
 public class SerialStateSwitchSimulationStep implements StateSwitchSimulationStep {
 
     @Override
-    public void nextStep(Grid grid) {
-        new HashSet<>(grid.getSimulatables()).forEach(Simulatable::stateSwitchStep);
-        grid.updateMapAndDeduplicate();
+    public void nextStep(Set<Simulatable> simulatables) {
+        new HashSet<>(simulatables).forEach(Simulatable::stateSwitchStep);
     }
 }

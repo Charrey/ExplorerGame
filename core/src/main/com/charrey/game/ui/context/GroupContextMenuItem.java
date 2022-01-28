@@ -25,14 +25,10 @@ public class GroupContextMenuItem extends ContextMenuItem {
     private static final CachedTexture childrenArrow = new CachedArrowTexture();
     private @Nullable ContextMenu subMenu;
 
-    @Override
-    public float getPrefWidth() {
-        return super.getPrefWidth() + 30;
-    }
-
     /**
      * Creates a new GroupContextMenuItem
-     * @param text text to be shown on the item
+     *
+     * @param text     text to be shown on the item
      * @param children Methods that may be used to create the items in the submenu.
      */
     public GroupContextMenuItem(String text, @NotNull List<Supplier<ContextMenuItem>> children) {
@@ -43,7 +39,7 @@ public class GroupContextMenuItem extends ContextMenuItem {
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 super.enter(event, x, y, pointer, fromActor);
                 if (subMenu == null || subMenu.getStage() == null) {
-                    subMenu = new ContextMenu(((ContextMenu )getParent()).getDepth() + 1);
+                    subMenu = new ContextMenu(((ContextMenu) getParent()).getDepth() + 1);
                     subMenu.setName("child-of-" + text);
                     getStage().getRoot().addActor(subMenu);
                     children.forEach(contextMenuItemSupplier -> subMenu.add(contextMenuItemSupplier.get()));
@@ -67,11 +63,16 @@ public class GroupContextMenuItem extends ContextMenuItem {
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                 super.exit(event, x, y, pointer, toActor);
-                if (groupContextMenuItem != toActor && toActor instanceof ContextMenuItem item && ((ContextMenu)item.getParent()).getDepth() <= ((ContextMenu)getParent()).getDepth()) {
-                    Arrays.stream(getStage().getRoot().getChildren().toArray()).filter(actor -> actor instanceof ContextMenu menu && menu.getDepth() > ((ContextMenu)getParent()).getDepth()).forEach(Actor::remove);
+                if (groupContextMenuItem != toActor && toActor instanceof ContextMenuItem item && ((ContextMenu) item.getParent()).getDepth() <= ((ContextMenu) getParent()).getDepth()) {
+                    Arrays.stream(getStage().getRoot().getChildren().toArray()).filter(actor -> actor instanceof ContextMenu menu && menu.getDepth() > ((ContextMenu) getParent()).getDepth()).forEach(Actor::remove);
                 }
             }
         });
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return super.getPrefWidth() + 30;
     }
 
     @Override
@@ -79,7 +80,6 @@ public class GroupContextMenuItem extends ContextMenuItem {
         super.draw(batch, parentAlpha);
         batch.draw(childrenArrow.get(15, (int) getHeight()), getX() + getWidth() - 15, getY(), 15, getHeight());
     }
-
 
 
     private static class CachedArrowTexture extends CachedTexture {

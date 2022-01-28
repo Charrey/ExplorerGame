@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class MainMenuButton extends TextButton {
     /**
      * Creates a new MainMenuButton
+     *
      * @param onClick what should happen when the button is clicked
      */
     public MainMenuButton(@NotNull Runnable onClick) {

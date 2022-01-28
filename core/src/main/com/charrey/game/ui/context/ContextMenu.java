@@ -17,12 +17,16 @@ import java.util.stream.StreamSupport;
  */
 public class ContextMenu extends Table {
 
-    private ContextMenu(){}
-
+    @NotNull
+    final List<ContextMenuItem> menuItems = new LinkedList<>();
     private int depth = 0;
+
+    private ContextMenu() {
+    }
 
     /**
      * Creates a new ContextMenu
+     *
      * @param depth the length of the hierarchy to the root context menu
      */
     public ContextMenu(int depth) {
@@ -33,13 +37,13 @@ public class ContextMenu extends Table {
 
     /**
      * Removes all context menus from a stage
+     *
      * @param stage stage to remove from
      */
     public static void removeAll(Stage stage) {
         List<Actor> list = StreamSupport.stream(stage.getRoot().getChildren().select(ContextMenu.class::isInstance).spliterator(), false).toList();
         list.forEach(Actor::remove);
     }
-
 
     private void addClickListener() {
         addCaptureListener(new InputListener() {
@@ -54,10 +58,9 @@ public class ContextMenu extends Table {
         });
     }
 
-    @NotNull final List<ContextMenuItem> menuItems = new LinkedList<>();
-
     /**
      * Adds a contextmenu item to the menu
+     *
      * @param menuItem item to add
      */
     public void add(@NotNull ContextMenuItem menuItem) {
@@ -74,6 +77,7 @@ public class ContextMenu extends Table {
 
     /**
      * Returns the length of the hierarchy to the root context menu. If this is the root context menu this is zero.
+     *
      * @return the depth of this context menu
      */
     public int getDepth() {

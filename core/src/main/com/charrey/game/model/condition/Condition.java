@@ -9,7 +9,9 @@ public abstract class Condition {
 
     /**
      * Tests the condition
+     *
      * @return the result
      */
     public abstract boolean test();
+
 }

@@ -15,8 +15,9 @@ import java.util.logging.Logger;
  */
 public class MouseIndicator extends Actor {
 
-    private final @NotNull Texture texture;
     private static final boolean ENABLED = false;
+    private final @NotNull Texture texture;
+    long lastPrint = 0;
 
     /**
      * Creates a new mouse indicator.
@@ -27,9 +28,8 @@ public class MouseIndicator extends Actor {
         map.fillCircle(10, 10, 10);
         Logger.getLogger(getClass().getName()).addHandler(new ConsoleHandler());
         texture = new Texture(map);
+        texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
-
-    long lastPrint = 0;
 
     @Override
     public void act(float delta) {

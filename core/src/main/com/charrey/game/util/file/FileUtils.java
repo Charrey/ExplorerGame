@@ -11,12 +11,14 @@ import java.io.File;
  */
 public class FileUtils {
 
-    private FileUtils() {}
+    private FileUtils() {
+    }
 
 
     /**
      * Gets the last used location for saving or loading savegames. Used to set a default directory for file choosers
      * and to save and overwrite.
+     *
      * @return the last used save file.
      */
     @Nullable
@@ -32,6 +34,7 @@ public class FileUtils {
     /**
      * Sets the last used location for saving or loading savegames. Used to set a default directory for file choosers
      * and to save and overwrite.
+     *
      * @param file the last used location
      */
     public static void setLastSaveFile(@NotNull FileHandle file) {

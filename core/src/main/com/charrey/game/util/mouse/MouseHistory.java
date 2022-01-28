@@ -5,12 +5,14 @@ package com.charrey.game.util.mouse;
  */
 public class MouseHistory {
 
-    private MouseHistory() {}
-
     private static MouseHistoryRecord lastTouchDown;
+
+    private MouseHistory() {
+    }
 
     /**
      * Returns the last mouse click recorded
+     *
      * @return last mouse click
      */
     public static MouseHistoryRecord lastTouchDown() {
@@ -19,6 +21,7 @@ public class MouseHistory {
 
     /**
      * Stores the last mouse click in a one-item cache
+     *
      * @param record mouse click to store
      */
     public static void touchDown(MouseHistoryRecord record) {

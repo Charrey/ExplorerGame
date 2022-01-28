@@ -15,10 +15,10 @@ import java.util.Map;
  */
 public class Cache {
 
-    private Cache () {}
-
     private static final String SETTINGS_FILENAME = "settings.json";
     private static Map<String, String> cachedProperties;
+    private Cache() {
+    }
 
     static String get(String key) {
         loadCacheFromFile();
@@ -27,6 +27,7 @@ public class Cache {
 
     /**
      * Saves the cache to a file.
+     *
      * @throws IOException thrown when the file could not be written to.
      */
     public static void save() throws IOException {

@@ -20,6 +20,7 @@ public class SpeedSlider extends Table {
 
     /**
      * Creates a new Slider
+     *
      * @param width width of the slider
      */
     public SpeedSlider(float width) {
@@ -33,7 +34,7 @@ public class SpeedSlider extends Table {
         add(start).align(Align.topLeft);
         add(middle).align(Align.center);
         add(end).align(Align.topRight);
-        slider.addListener(new ChangeListener(){
+        slider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 Settings.requestedSimulationsPerSecond = slider.getValue();

@@ -8,4 +8,5 @@ public class True extends Condition {
     public boolean test() {
         return true;
     }
+
 }

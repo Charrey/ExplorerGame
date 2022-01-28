@@ -29,16 +29,9 @@ public abstract class DirectionalSimulatable extends Simulatable {
     }
 
     /**
-     * Changes the simulatable's direction (in the next step).
-     * @param direction direction to set the simulatable to next step
-     */
-    public void setDirection(Direction direction) {
-        this.nextDirection = direction;
-    }
-
-    /**
      * Changes the simulatable's direction immediately (in the current step). This should only be called for simulatables that have
      * not yet been added to a model being simulated.
+     *
      * @param direction direction to set the simulatable to
      */
     public void setDirectionNow(Direction direction) {
@@ -48,6 +41,7 @@ public abstract class DirectionalSimulatable extends Simulatable {
 
     /**
      * Returns the direction this explorer is facing.
+     *
      * @return the direction
      */
     public Direction getDirection() {
@@ -55,11 +49,27 @@ public abstract class DirectionalSimulatable extends Simulatable {
     }
 
     /**
-     * Returns the direction this simulatable will have next step
-     * @return direction
+     * Changes the simulatable's direction (in the next step).
+     *
+     * @param direction direction to set the simulatable to next step
      */
-    protected Direction getNextDirection() {
-        return nextDirection;
+    public void setDirection(Direction direction) {
+        this.nextDirection = direction;
+    }
+
+    /**
+     * Changes the simulatable's location (in the next step) by moving one step forward.
+     */
+    protected void advance() {
+        super.advance(getDirection());
+    }
+
+    /**
+     * Changes the simulatable's location immediately (in the current step) by moving one step in the direction this simulatable
+     * is facing. This should only be called for simulatables that have not yet been added to a model.
+     */
+    protected void advanceNow() {
+        super.advanceNow(getDirection());
     }
 
     @Override

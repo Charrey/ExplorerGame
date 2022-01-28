@@ -32,5 +32,4 @@ import java.io.File;
 public record FileChooserConfiguration(File directory, String title, FileFilter nameFilter, String approveText) {
 
 
-
 }

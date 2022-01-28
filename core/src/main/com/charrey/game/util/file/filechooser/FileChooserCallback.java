@@ -30,15 +30,16 @@ import com.badlogic.gdx.files.FileHandle;
  */
 public interface FileChooserCallback {
 
-	/**
-	 * Method executed when the user has selected a file
-	 * @param file file selected
-	 */
-	void onFileChosen(FileHandle file);
+    /**
+     * Method executed when the user has selected a file
+     *
+     * @param file file selected
+     */
+    void onFileChosen(FileHandle file);
 
-	/**
-	 * Method executed when the user cancels the file selection operation
-	 */
-	void onCancellation();
+    /**
+     * Method executed when the user cancels the file selection operation
+     */
+    void onCancellation();
 
 }

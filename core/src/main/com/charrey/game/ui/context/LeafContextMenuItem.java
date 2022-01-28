@@ -14,12 +14,13 @@ public class LeafContextMenuItem extends ContextMenuItem {
 
     /**
      * Creates a new LeafContextMenuItem.
-     * @param text text on the contextmenu item
+     *
+     * @param text    text on the contextmenu item
      * @param onClick task performed when the contextmenu item is clicked
      */
     public LeafContextMenuItem(String text, @NotNull Runnable onClick) {
         super(text);
-        addCaptureListener(new ClickListener(){
+        addCaptureListener(new ClickListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (button == 0) {

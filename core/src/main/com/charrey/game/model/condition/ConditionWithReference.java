@@ -13,7 +13,8 @@ public abstract class ConditionWithReference extends Condition {
 
     /**
      * Creates a new ConditionWithReference
-     * @param grid the model
+     *
+     * @param grid     the model
      * @param location location of the reference in the model
      */
     public ConditionWithReference(Grid grid, GridItem location) {
@@ -23,6 +24,7 @@ public abstract class ConditionWithReference extends Condition {
 
     /**
      * Returns the location of the reference
+     *
      * @return the location
      */
     public GridItem getLocation() {
@@ -31,6 +33,7 @@ public abstract class ConditionWithReference extends Condition {
 
     /**
      * Returns the model that the reference is in
+     *
      * @return the model
      */
     protected Grid getGrid() {

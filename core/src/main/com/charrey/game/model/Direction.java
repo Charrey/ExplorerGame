@@ -28,8 +28,9 @@ public enum Direction {
 
     /**
      * Provides the direction of a point in a 2D plane relative to another point.
+     *
      * @param from relative point
-     * @param to point to retrieve the direction of
+     * @param to   point to retrieve the direction of
      * @return direction of the point
      */
     public static Direction relativeDirection(Vector2 from, Vector2 to) {
@@ -53,7 +54,20 @@ public enum Direction {
     }
 
     /**
+     * Performs an operation for each wind direction (thus excluding NOT_APPLICABLE)
+     *
+     * @param consumer the operation
+     */
+    public static void forEachConcrete(@NotNull Consumer<Direction> consumer) {
+        consumer.accept(UP);
+        consumer.accept(DOWN);
+        consumer.accept(LEFT);
+        consumer.accept(RIGHT);
+    }
+
+    /**
      * Returns the direction 270 degrees to the right (or 90 degrees to the left) of this direction
+     *
      * @return the direction to its left
      */
     public @NotNull Direction rotateLeft() {
@@ -67,6 +81,7 @@ public enum Direction {
 
     /**
      * Returns the direction 90 degrees to the right (or 270 degrees to the left) of this direction
+     *
      * @return the direction to its right
      */
     public @NotNull Direction rotateRight() {
@@ -80,6 +95,7 @@ public enum Direction {
 
     /**
      * Returns the direction opposite to this direction
+     *
      * @return the opposite direction
      */
     public @NotNull Direction opposite() {
@@ -92,13 +108,11 @@ public enum Direction {
     }
 
     /**
-     * Performs an operation for each wind direction (thus excluding NOT_APPLICABLE)
-     * @param consumer the operation
+     * Returns whether this is a horizontal direction (left or right)
+     *
+     * @return whether horizontal
      */
-    public static void forEachConcrete(@NotNull Consumer<Direction> consumer) {
-        consumer.accept(UP);
-        consumer.accept(DOWN);
-        consumer.accept(LEFT);
-        consumer.accept(RIGHT);
+    public boolean isHorizontal() {
+        return this == LEFT || this == RIGHT;
     }
 }

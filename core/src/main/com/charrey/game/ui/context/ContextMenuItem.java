@@ -12,6 +12,7 @@ public abstract class ContextMenuItem extends TextButton {
 
     /**
      * Creates a new ContextMenuItem.
+     *
      * @param text text to be shown on the item
      */
     protected ContextMenuItem(String text) {

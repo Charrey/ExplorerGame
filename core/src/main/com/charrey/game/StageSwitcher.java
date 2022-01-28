@@ -9,6 +9,7 @@ import com.charrey.game.stage.ExploreStage;
 public interface StageSwitcher {
     /**
      * Sets the provided stage as visible in the window.
+     *
      * @param stage the stage
      */
     void changeToStage(ExploreStage stage);

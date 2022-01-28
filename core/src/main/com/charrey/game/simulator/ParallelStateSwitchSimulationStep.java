@@ -1,9 +1,9 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.model.Grid;
 import com.charrey.game.model.simulatable.Simulatable;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -21,11 +21,11 @@ public class ParallelStateSwitchSimulationStep implements StateSwitchSimulationS
 
 
     @Override
-    public void nextStep(Grid grid) {
+    public void nextStep(Set<Simulatable> simulatables) {
         parallelExecutionLock.lock();
-        AtomicInteger remaining = new AtomicInteger(grid.getSimulatables().size());
+        AtomicInteger remaining = new AtomicInteger(simulatables.size());
         Condition done = parallelExecutionLock.newCondition();
-        for (Simulatable simulatable : new HashSet<>(grid.getSimulatables())) {
+        for (Simulatable simulatable : new HashSet<>(simulatables)) {
             concurrentExecutor.execute(() -> {
                 simulatable.stateSwitchStep();
                 if (remaining.decrementAndGet() == 0) {

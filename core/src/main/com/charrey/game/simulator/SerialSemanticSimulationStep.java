@@ -1,9 +1,9 @@
 package com.charrey.game.simulator;
 
-import com.charrey.game.model.Grid;
 import com.charrey.game.model.simulatable.Simulatable;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Performs the simulation step of the simulator in series (using a single computation thread)
@@ -11,7 +11,7 @@ import java.util.HashSet;
 public class SerialSemanticSimulationStep implements SemanticSimulationStep {
 
     @Override
-    public void executeOneStep(Grid grid) {
-        new HashSet<>(grid.getSimulatables()).forEach(Simulatable::simulateStep);
+    public void executeOneStep(Set<Simulatable> simulatables) {
+        new HashSet<>(simulatables).forEach(Simulatable::simulateStep);
     }
 }
